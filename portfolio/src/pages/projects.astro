@@ -1,0 +1,118 @@
+---
+import Base from '../layouts/Base.astro';
+import { getProjects } from '../lib/projects.js';
+import { SITE } from '../lib/config.js';
+
+const projects = await getProjects();
+
+// Language color (subset — matches GitHub's palette for common ones)
+const langColors = {
+  Python: '#3572A5',
+  JavaScript: '#f1e05a',
+  TypeScript: '#3178c6',
+  Jupyter: '#DA5B0B',
+  R: '#198CE7',
+  Go: '#00ADD8',
+  Rust: '#dea584',
+  HTML: '#e34c26',
+  CSS: '#563d7c',
+  Shell: '#89e051',
+  Java: '#b07219',
+  'C++': '#f34b7d',
+};
+
+function fmt(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'short',
+  });
+}
+---
+<Base title="Projects" description="Code and experiments">
+  <header class="mb-16 stagger">
+    <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-rust mb-4">
+      ※ Code
+    </div>
+    <h1 class="font-display text-5xl sm:text-6xl text-ink tracking-tightest font-medium mb-5">
+      Projects
+    </h1>
+    <p class="font-display italic text-xl text-inksoft max-w-2xl leading-snug">
+      Public repositories, pulled live from
+      <a
+        href={`https://github.com/${SITE.githubHandle}`}
+        target="_blank" rel="noopener"
+        class="link-underline text-ink"
+      >
+        GitHub
+      </a>. Sorted by recent activity.
+    </p>
+  </header>
+
+  {projects.length === 0 ? (
+    <p class="text-muted italic">
+      No projects yet — or the GitHub handle hasn't been configured. Edit
+      <code class="font-mono text-xs bg-paperdark px-1.5 py-0.5 rounded mx-1">src/lib/config.js</code>
+      to set it.
+    </p>
+  ) : (
+    <ul class="grid sm:grid-cols-2 gap-5">
+      {projects.map((p) => (
+        <li>
+          <a
+            href={p.url}
+            target="_blank"
+            rel="noopener"
+            class="card-hover group block h-full p-6 border border-ink/15 bg-paper/60 rounded-sm"
+          >
+            <div class="flex items-baseline justify-between mb-3">
+              <h2 class="font-display text-xl text-ink tracking-tightest font-medium group-hover:text-rust transition-colors">
+                {p.name}
+              </h2>
+              {p.stars > 0 && (
+                <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted whitespace-nowrap ml-3">
+                  ★ {p.stars}
+                </span>
+              )}
+            </div>
+
+            {p.description && (
+              <p class="text-inksoft text-[14px] leading-relaxed mb-4 min-h-[2.5rem]">
+                {p.description}
+              </p>
+            )}
+
+            <div class="flex items-center gap-3 flex-wrap font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+              {p.language && (
+                <span class="flex items-center gap-1.5">
+                  <span
+                    class="inline-block w-2 h-2 rounded-full"
+                    style={`background:${langColors[p.language] || '#888'}`}
+                  ></span>
+                  {p.language}
+                </span>
+              )}
+              {p.language && <span>·</span>}
+              <span>Updated {fmt(p.updated)}</span>
+              {p.homepage && (
+                <>
+                  <span>·</span>
+                  <span class="text-rust">Live ↗</span>
+                </>
+              )}
+            </div>
+
+            {p.topics.length > 0 && (
+              <div class="mt-4 flex flex-wrap gap-1.5">
+                {p.topics.slice(0, 4).map((t) => (
+                  <span class="font-mono text-[9px] uppercase tracking-[0.15em] text-muted bg-paperdark px-2 py-0.5 rounded-sm">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</Base>

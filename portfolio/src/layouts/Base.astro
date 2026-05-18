@@ -1,0 +1,117 @@
+---
+import '../styles/global.css';
+import { SITE } from '../lib/config.js';
+
+const { title, description } = Astro.props;
+const pageTitle = title ? `${title} — ${SITE.name}` : SITE.name;
+const pageDesc = description || SITE.tagline;
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { href: '/', label: 'Index' },
+  { href: '/essays', label: 'Essays' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/about', label: 'About' },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content={pageDesc} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDesc} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{pageTitle}</title>
+  </head>
+  <body class="relative">
+    <div class="relative z-10 mx-auto max-w-5xl px-6 sm:px-10 lg:px-14">
+
+      <!-- ============ HEADER ============ -->
+      <header class="pt-10 pb-6 flex items-baseline justify-between gap-6 flex-wrap">
+        <a href="/" class="group flex items-baseline gap-3 no-underline">
+          <span class="font-display text-2xl sm:text-3xl text-ink tracking-tightest font-medium">
+            {SITE.name}
+          </span>
+          <span class="hidden sm:inline font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+            ※ index
+          </span>
+        </a>
+
+        <nav>
+          <ul class="flex items-center gap-5 sm:gap-7 font-mono text-[11px] uppercase tracking-[0.18em]">
+            {navLinks.map(({ href, label }) => {
+              const isActive =
+                href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+              return (
+                <li>
+                  <a
+                    href={href}
+                    class={`transition-colors ${
+                      isActive ? 'text-ink' : 'text-muted hover:text-ink'
+                    }`}
+                  >
+                    {isActive && <span class="text-rust mr-1">●</span>}
+                    {label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </header>
+
+      <div class="editorial-rule mb-12 sm:mb-16"></div>
+
+      <!-- ============ MAIN ============ -->
+      <main class="pb-24">
+        <slot />
+      </main>
+
+      <!-- ============ FOOTER ============ -->
+      <footer class="pt-10 pb-12 border-t border-ink/10">
+        <div class="flex flex-col sm:flex-row sm:justify-between gap-6 text-sm">
+          <div class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+            © {new Date().getFullYear()} {SITE.name}
+            {SITE.location && <span class="ml-3">// {SITE.location}</span>}
+          </div>
+          <div class="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.18em]">
+            {SITE.email && (
+              <a href={`mailto:${SITE.email}`} class="text-muted hover:text-ink transition-colors">
+                Email
+              </a>
+            )}
+            <a
+              href={SITE.substackUrl || `https://${SITE.substackHandle}.substack.com`}
+              target="_blank" rel="noopener"
+              class="text-muted hover:text-ink transition-colors"
+            >
+              Substack
+            </a>
+            <a
+              href={`https://github.com/${SITE.githubHandle}`}
+              target="_blank" rel="noopener"
+              class="text-muted hover:text-ink transition-colors"
+            >
+              GitHub
+            </a>
+            {SITE.twitter && (
+              <a href={`https://twitter.com/${SITE.twitter}`} target="_blank" rel="noopener" class="text-muted hover:text-ink transition-colors">
+                Twitter
+              </a>
+            )}
+            {SITE.linkedin && (
+              <a href={`https://linkedin.com/in/${SITE.linkedin}`} target="_blank" rel="noopener" class="text-muted hover:text-ink transition-colors">
+                LinkedIn
+              </a>
+            )}
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </body>
+</html>

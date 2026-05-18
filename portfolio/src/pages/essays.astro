@@ -1,0 +1,71 @@
+---
+import Base from '../layouts/Base.astro';
+import { getEssays } from '../lib/essays.js';
+import { SITE, SUBSTACK_BASE } from '../lib/config.js';
+
+const essays = await getEssays();
+
+function fmt(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric',
+  });
+}
+---
+<Base title="Essays" description="Long-form writing">
+  <header class="mb-16 stagger">
+    <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-rust mb-4">
+      ※ Writing
+    </div>
+    <h1 class="font-display text-5xl sm:text-6xl text-ink tracking-tightest font-medium mb-5">
+      Essays
+    </h1>
+    <p class="font-display italic text-xl text-inksoft max-w-2xl leading-snug">
+      Long-form thinking. Pulled live from
+      <a href={SUBSTACK_BASE} target="_blank" rel="noopener" class="link-underline text-ink">
+        my Substack
+      </a>.
+    </p>
+  </header>
+
+  {essays.length === 0 ? (
+    <p class="text-muted italic">
+      No essays yet — or the Substack handle hasn't been configured. Edit
+      <code class="font-mono text-xs bg-paperdark px-1.5 py-0.5 rounded mx-1">src/lib/config.js</code>
+      to set it.
+    </p>
+  ) : (
+    <ul class="space-y-12">
+      {essays.map((essay) => (
+        <li class="group">
+          <a
+            href={essay.url}
+            target="_blank"
+            rel="noopener"
+            class="block"
+          >
+            <div class="flex items-baseline gap-4 mb-3">
+              <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+                {fmt(essay.date)}
+              </span>
+              <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                · {essay.readingTime} min
+              </span>
+            </div>
+            <h2 class="font-display text-3xl sm:text-4xl text-ink tracking-tightest font-medium mb-3 group-hover:text-rust transition-colors leading-[1.1]">
+              {essay.title}
+            </h2>
+            {essay.description && (
+              <p class="text-inksoft text-[16px] leading-relaxed max-w-2xl">
+                {essay.description}…
+              </p>
+            )}
+            <span class="inline-block mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-rust">
+              Read on Substack →
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</Base>

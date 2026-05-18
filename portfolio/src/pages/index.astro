@@ -1,0 +1,122 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../lib/config.js';
+import { getEssays } from '../lib/essays.js';
+import { getProjects } from '../lib/projects.js';
+
+const essays = await getEssays();
+const projects = await getProjects();
+
+// Build a unified feed — this is the polymath move:
+// essays and projects shown in one timeline, treated equal.
+const feed = [
+  ...essays.map((e) => ({
+    kind: 'essay',
+    title: e.title,
+    url: e.url,
+    description: e.description,
+    date: e.date,
+    meta: `${e.readingTime} min read`,
+  })),
+  ...projects.map((p) => ({
+    kind: 'project',
+    title: p.name,
+    url: p.url,
+    description: p.description,
+    date: p.updated,
+    meta: [p.language, p.stars > 0 ? `★ ${p.stars}` : null].filter(Boolean).join(' · '),
+  })),
+]
+  .sort((a, b) => new Date(b.date) - new Date(a.date))
+  .slice(0, 8);
+
+function fmt(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'short', day: 'numeric',
+  });
+}
+---
+<Base>
+  <!-- ============ HERO ============ -->
+  <section class="mb-20 sm:mb-28 stagger">
+    <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-rust mb-6">
+      ※ Currently {SITE.location && <span>· {SITE.location}</span>}
+    </div>
+
+    <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-ink leading-[1.05] tracking-tightest font-medium mb-8 max-w-3xl">
+      {SITE.tagline.split('.')[0]}.
+    </h1>
+
+    <p class="font-display italic text-xl sm:text-2xl text-inksoft max-w-2xl leading-snug">
+      {SITE.tagline.split('.').slice(1).join('.').trim()}
+    </p>
+
+    <div class="mt-10 flex flex-wrap gap-x-7 gap-y-3 font-mono text-[11px] uppercase tracking-[0.18em]">
+      <a href="/essays" class="text-ink hover:text-rust transition-colors">
+        → Read essays
+      </a>
+      <a href="/projects" class="text-ink hover:text-rust transition-colors">
+        → See projects
+      </a>
+      <a href="/about" class="text-muted hover:text-ink transition-colors">
+        About
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ UNIFIED FEED ============ -->
+  <section>
+    <header class="flex items-baseline justify-between mb-10 border-b border-ink/15 pb-3">
+      <h2 class="font-display text-2xl text-ink tracking-tightest">Recently</h2>
+      <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+        Essays · Projects
+      </span>
+    </header>
+
+    {feed.length === 0 ? (
+      <p class="text-muted italic">
+        Nothing here yet. Once your Substack and GitHub handles are configured in
+        <code class="font-mono text-xs bg-paperdark px-1.5 py-0.5 rounded ml-1">src/lib/config.js</code>,
+        posts and repos will appear automatically.
+      </p>
+    ) : (
+      <ul class="space-y-7">
+        {feed.map((item) => (
+          <li>
+            <a
+              href={item.url}
+              target={item.url.startsWith('http') ? '_blank' : null}
+              rel={item.url.startsWith('http') ? 'noopener' : null}
+              class="group block py-4 border-b border-ink/8 hover:border-ink/20 transition-colors"
+            >
+              <div class="flex items-baseline gap-4 mb-2">
+                <span class={`font-mono text-[10px] uppercase tracking-[0.22em] ${
+                  item.kind === 'essay' ? 'text-rust' : 'text-ink'
+                }`}>
+                  {item.kind === 'essay' ? '✎ Essay' : '⌘ Project'}
+                </span>
+                <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                  {fmt(item.date)}
+                </span>
+                {item.meta && (
+                  <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                    · {item.meta}
+                  </span>
+                )}
+              </div>
+              <h3 class="font-display text-xl sm:text-2xl text-ink tracking-tightest mb-2 group-hover:text-rust transition-colors">
+                {item.title}
+              </h3>
+              {item.description && (
+                <p class="text-inksoft text-[15px] leading-relaxed max-w-2xl">
+                  {item.description}
+                </p>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</Base>

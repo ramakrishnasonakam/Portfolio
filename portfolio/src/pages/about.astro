@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../lib/config.js';
+---
+<Base title="About" description={SITE.bio}>
+  <article class="max-w-reading stagger">
+    <header class="mb-12">
+      <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-rust mb-4">
+        ※ About
+      </div>
+      <h1 class="font-display text-5xl sm:text-6xl text-ink tracking-tightest font-medium mb-5 leading-[1.05]">
+        {SITE.name}
+      </h1>
+      <p class="font-display italic text-xl text-inksoft leading-snug">
+        {SITE.tagline}
+      </p>
+    </header>
+
+    <div class="prose-content font-body text-[17px] leading-[1.75] text-inksoft space-y-5">
+      {SITE.bio.split(/\n\n+/).map((para) => <p>{para}</p>)}
+    </div>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="mt-16 pt-10 border-t border-ink/15">
+      <h2 class="font-mono text-[11px] uppercase tracking-[0.22em] text-muted mb-6">
+        Reach out
+      </h2>
+      <ul class="space-y-3 font-body text-[16px]">
+        {SITE.email && (
+          <li>
+            <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted inline-block w-24">Email</span>
+            <a href={`mailto:${SITE.email}`} class="text-ink link-underline">
+              {SITE.email}
+            </a>
+          </li>
+        )}
+        <li>
+          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted inline-block w-24">Substack</span>
+          <a
+            href={SITE.substackUrl || `https://${SITE.substackHandle}.substack.com`}
+            target="_blank" rel="noopener"
+            class="text-ink link-underline"
+          >
+            {SITE.substackUrl || `${SITE.substackHandle}.substack.com`}
+          </a>
+        </li>
+        <li>
+          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted inline-block w-24">GitHub</span>
+          <a
+            href={`https://github.com/${SITE.githubHandle}`}
+            target="_blank" rel="noopener"
+            class="text-ink link-underline"
+          >
+            github.com/{SITE.githubHandle}
+          </a>
+        </li>
+        {SITE.twitter && (
+          <li>
+            <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted inline-block w-24">Twitter</span>
+            <a href={`https://twitter.com/${SITE.twitter}`} target="_blank" rel="noopener" class="text-ink link-underline">
+              @{SITE.twitter}
+            </a>
+          </li>
+        )}
+        {SITE.linkedin && (
+          <li>
+            <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted inline-block w-24">LinkedIn</span>
+            <a href={`https://linkedin.com/in/${SITE.linkedin}`} target="_blank" rel="noopener" class="text-ink link-underline">
+              linkedin.com/in/{SITE.linkedin}
+            </a>
+          </li>
+        )}
+      </ul>
+    </section>
+  </article>
+</Base>
