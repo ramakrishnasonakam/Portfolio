@@ -1,18 +1,12 @@
-import { GITHUB_API, SITE } from './config.js';
+import { GITHUB_API, FEATURED_PROJECTS, SITE } from './config.js';
 
-/**
- * Fetches public repos from GitHub at build time.
- * Filters out forks and archived. Sorts by recent activity.
- */
 export async function getProjects() {
-  if (SITE.githubHandle === 'YOUR_GITHUB') {
-    return DEMO_PROJECTS;
-  }
+  if (!FEATURED_PROJECTS || FEATURED_PROJECTS.length === 0) return [];
 
   try {
     const res = await fetch(GITHUB_API, {
       headers: {
-        'Accept': 'application/vnd.github+json',
+        Accept: 'application/vnd.github+json',
         'User-Agent': 'portfolio-site',
       },
     });
@@ -23,9 +17,12 @@ export async function getProjects() {
     }
 
     const repos = await res.json();
+    const byName = new Map(repos.map((r) => [r.name.toLowerCase(), r]));
 
-    return repos
-      .filter((r) => !r.fork && !r.archived && !r.private)
+    // Return ONLY the repos listed in FEATURED_PROJECTS, in that order.
+    return FEATURED_PROJECTS
+      .map((name) => byName.get(name.toLowerCase()))
+      .filter(Boolean)
       .map((r) => ({
         name: r.name,
         url: r.html_url,
@@ -35,44 +32,9 @@ export async function getProjects() {
         updated: r.updated_at,
         topics: r.topics || [],
         homepage: r.homepage || null,
-      }))
-      .sort((a, b) => new Date(b.updated) - new Date(a.updated));
+      }));
   } catch (err) {
     console.warn('[projects] could not fetch GitHub repos:', err.message);
     return [];
   }
 }
-
-// Shown only when the GitHub handle hasn't been configured yet.
-const DEMO_PROJECTS = [
-  {
-    name: 'rupee-watch',
-    url: '#',
-    description: 'A small dashboard tracking INR/USD against oil, gold, and Fed rate moves. Built to back up the essays.',
-    language: 'Python',
-    stars: 12,
-    updated: '2026-04-30',
-    topics: ['economics', 'india', 'data-viz'],
-    homepage: null,
-  },
-  {
-    name: 'cad-decomposition',
-    url: '#',
-    description: 'Decomposing India\'s Current Account Deficit by sector and year. Replicates RBI methodology with cleaner exports.',
-    language: 'Python',
-    stars: 4,
-    updated: '2026-03-22',
-    topics: ['macro', 'data'],
-    homepage: null,
-  },
-  {
-    name: 'forex-flow-map',
-    url: '#',
-    description: 'Sankey diagram of foreign exchange inflows and outflows from RBI quarterly data.',
-    language: 'JavaScript',
-    stars: 7,
-    updated: '2026-02-18',
-    topics: ['d3', 'visualization'],
-    homepage: null,
-  },
-];

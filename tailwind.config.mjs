@@ -4,24 +4,26 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
-        body: ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        // Neue Haas Grotesk-inspired: pure, geometric, restrained
+        sans: ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
-        paper: '#F5F1E8',        // warm cream
-        paperdark: '#EDE6D3',     // slightly deeper cream
-        ink: '#1A1A1A',           // near-black
-        inksoft: '#3A3A3A',       // softer ink for body
-        rust: '#B24C2A',          // rust-red accent
-        rustdark: '#8C3A20',      // hover state
-        muted: '#6B6258',         // metadata
-      },
-      maxWidth: {
-        'reading': '42rem',
+        // Pure Swiss palette: white, near-black, one signal red, restrained grays.
+        canvas: '#FFFFFF',
+        ink: '#0A0A0A',
+        body: '#1A1A1A',
+        muted: '#737373',
+        rule: '#E5E5E5',
+        signal: '#E63946', // single accent — red dot, hover state, active nav
       },
       letterSpacing: {
-        'tightest': '-0.04em',
+        tightest: '-0.045em',
+        tighter: '-0.025em',
+      },
+      lineHeight: {
+        none: '0.95',
+        snug: '1.1',
       },
     },
   },

@@ -8,10 +8,10 @@ const pageDesc = description || SITE.tagline;
 const currentPath = Astro.url.pathname;
 
 const navLinks = [
-  { href: '/', label: 'Index' },
-  { href: '/essays', label: 'Essays' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/about', label: 'About' },
+  { href: '/', label: 'Index', num: '01' },
+  { href: '/essays', label: 'Essays', num: '02' },
+  { href: '/projects', label: 'Projects', num: '03' },
+  { href: '/about', label: 'About', num: '04' },
 ];
 ---
 <!doctype html>
@@ -24,38 +24,40 @@ const navLinks = [
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDesc} />
     <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
     <title>{pageTitle}</title>
   </head>
-  <body class="relative">
-    <div class="relative z-10 mx-auto max-w-5xl px-6 sm:px-10 lg:px-14">
+  <body>
+    <!-- ╔═══ FIXED RULE AT TOP ═══╗ -->
+    <div class="fixed top-0 left-0 right-0 h-px bg-ink z-50"></div>
 
-      <!-- ============ HEADER ============ -->
-      <header class="pt-10 pb-6 flex items-baseline justify-between gap-6 flex-wrap">
-        <a href="/" class="group flex items-baseline gap-3 no-underline">
-          <span class="font-display text-2xl sm:text-3xl text-ink tracking-tightest font-medium">
-            {SITE.name}
-          </span>
-          <span class="hidden sm:inline font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-            ※ index
+    <div class="mx-auto max-w-[1280px] px-6 sm:px-10 lg:px-16">
+
+      <!-- ╔═══ HEADER : 12-col grid, asymmetric ═══╗ -->
+      <header class="pt-10 pb-6 grid grid-cols-12 gap-4 items-baseline">
+        <a
+          href="/"
+          class="col-span-12 sm:col-span-4 font-sans font-bold text-ink tracking-tightest text-xl leading-none"
+        >
+          {SITE.name}
+          <span class="block mt-1 text-[10px] font-mono font-normal uppercase tracking-[0.2em] text-muted">
+            {SITE.location}
           </span>
         </a>
 
-        <nav>
-          <ul class="flex items-center gap-5 sm:gap-7 font-mono text-[11px] uppercase tracking-[0.18em]">
-            {navLinks.map(({ href, label }) => {
+        <nav class="col-span-12 sm:col-span-8 sm:justify-self-end">
+          <ul class="flex items-baseline gap-x-6 sm:gap-x-8 font-mono text-[11px] uppercase tracking-[0.15em]">
+            {navLinks.map(({ href, label, num }) => {
               const isActive =
                 href === '/' ? currentPath === '/' : currentPath.startsWith(href);
               return (
                 <li>
-                  <a
-                    href={href}
-                    class={`transition-colors ${
-                      isActive ? 'text-ink' : 'text-muted hover:text-ink'
-                    }`}
-                  >
-                    {isActive && <span class="text-rust mr-1">●</span>}
-                    {label}
+                  <a href={href} class="group inline-flex items-baseline gap-1.5">
+                    <span class={isActive ? 'text-signal' : 'text-muted group-hover:text-ink transition-colors'}>
+                      {num}
+                    </span>
+                    <span class={isActive ? 'text-ink' : 'text-ink/70 group-hover:text-ink transition-colors'}>
+                      {label}
+                    </span>
                   </a>
                 </li>
               );
@@ -64,51 +66,39 @@ const navLinks = [
         </nav>
       </header>
 
-      <div class="editorial-rule mb-12 sm:mb-16"></div>
+      <!-- ╔═══ HORIZONTAL RULE ═══╗ -->
+      <div class="h-px bg-rule mb-16 sm:mb-24"></div>
 
-      <!-- ============ MAIN ============ -->
-      <main class="pb-24">
+      <!-- ╔═══ MAIN ═══╗ -->
+      <main class="pb-32">
         <slot />
       </main>
 
-      <!-- ============ FOOTER ============ -->
-      <footer class="pt-10 pb-12 border-t border-ink/10">
-        <div class="flex flex-col sm:flex-row sm:justify-between gap-6 text-sm">
-          <div class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
-            © {new Date().getFullYear()} {SITE.name}
-            {SITE.location && <span class="ml-3">// {SITE.location}</span>}
-          </div>
-          <div class="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.18em]">
-            {SITE.email && (
-              <a href={`mailto:${SITE.email}`} class="text-muted hover:text-ink transition-colors">
-                Email
-              </a>
-            )}
-            <a
-              href={SITE.substackUrl || `https://${SITE.substackHandle}.substack.com`}
-              target="_blank" rel="noopener"
-              class="text-muted hover:text-ink transition-colors"
-            >
-              Substack
-            </a>
-            <a
-              href={`https://github.com/${SITE.githubHandle}`}
-              target="_blank" rel="noopener"
-              class="text-muted hover:text-ink transition-colors"
-            >
-              GitHub
-            </a>
-            {SITE.twitter && (
-              <a href={`https://twitter.com/${SITE.twitter}`} target="_blank" rel="noopener" class="text-muted hover:text-ink transition-colors">
-                Twitter
-              </a>
-            )}
-            {SITE.linkedin && (
-              <a href={`https://linkedin.com/in/${SITE.linkedin}`} target="_blank" rel="noopener" class="text-muted hover:text-ink transition-colors">
-                LinkedIn
-              </a>
-            )}
-          </div>
+      <!-- ╔═══ FOOTER ═══╗ -->
+      <footer class="pt-10 pb-12 border-t border-rule grid grid-cols-12 gap-4 items-baseline">
+        <div class="col-span-12 sm:col-span-6 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+          © {new Date().getFullYear()} — {SITE.name}
+        </div>
+        <div class="col-span-12 sm:col-span-6 sm:justify-self-end flex flex-wrap gap-x-5 gap-y-1 font-mono text-[10px] uppercase tracking-[0.18em]">
+          {SITE.email && (
+            <a href={`mailto:${SITE.email}`} class="text-muted hover:text-ink transition-colors">Email</a>
+          )}
+          <a
+            href={SITE.substackUrl || `https://${SITE.substackHandle}.substack.com`}
+            target="_blank" rel="noopener"
+            class="text-muted hover:text-ink transition-colors"
+          >Substack</a>
+          <a
+            href={`https://github.com/${SITE.githubHandle}`}
+            target="_blank" rel="noopener"
+            class="text-muted hover:text-ink transition-colors"
+          >GitHub</a>
+          {SITE.twitter && (
+            <a href={`https://twitter.com/${SITE.twitter}`} target="_blank" rel="noopener" class="text-muted hover:text-ink transition-colors">Twitter</a>
+          )}
+          {SITE.linkedin && (
+            <a href={`https://linkedin.com/in/${SITE.linkedin}`} target="_blank" rel="noopener" class="text-muted hover:text-ink transition-colors">LinkedIn</a>
+          )}
         </div>
       </footer>
 
