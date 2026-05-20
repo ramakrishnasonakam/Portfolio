@@ -4,26 +4,31 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // Neue Haas Grotesk-inspired: pure, geometric, restrained
+        // Editorial display serif + clean modern sans
+        display: ['"Fraunces"', 'ui-serif', 'Georgia', 'serif'],
         sans: ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
-        // Pure Swiss palette: white, near-black, one signal red, restrained grays.
-        canvas: '#FFFFFF',
-        ink: '#0A0A0A',
-        body: '#1A1A1A',
-        muted: '#737373',
-        rule: '#E5E5E5',
-        signal: '#E63946', // single accent — red dot, hover state, active nav
+        // Aristocratic palette: black/white/grey, slate-blue signal
+        bg: '#FFFFFF',
+        ink: '#0E0E10',
+        body: '#1F1F23',
+        grey: '#6B6B72',
+        soft: '#9A9AA1',
+        rule: '#E4E4E7',
+        wash: '#F5F5F7',
+        // Slate-blue — chosen for restraint + depth. Not navy, not cobalt.
+        blue: '#2A3D5C',
+        blueBright: '#3B6EA8',
+        blueWash: '#EEF2F8',
       },
       letterSpacing: {
         tightest: '-0.045em',
         tighter: '-0.025em',
       },
-      lineHeight: {
-        none: '0.95',
-        snug: '1.1',
+      maxWidth: {
+        prose: '38rem',
       },
     },
   },

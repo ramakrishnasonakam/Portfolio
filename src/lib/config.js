@@ -2,8 +2,8 @@
 //
 //   ✏️  EDIT THIS FILE — IT IS THE ONLY FILE YOU NEED TO TOUCH.
 //
-//   Every value you change here flows through the whole site.
-//   Save → git commit → git push → Vercel auto-rebuilds in ~60s.
+//   Every value flows through the site. Save → commit → push.
+//   Vercel auto-rebuilds in ~60s.
 //
 // ════════════════════════════════════════════════════════════════
 
@@ -12,51 +12,42 @@
 export const SITE = {
   name: 'Ramakrishna Sonakam',
 
-  // Big headline on the homepage. One sentence. End with a period.
-  tagline: 'Engineer. Analyst. Teacher. Writer.',
+  // The hero. One line. End with period.
+  // This is the largest text on the site — make it count.
+  tagline: 'Engineer. Analyst. Teacher. Writer',
 
-  // About-page paragraph. 2–4 sentences. Be specific, not generic.
-  bio: `Trained as an engineer, then studied data science. I write about India's macroeconomic story — currency, capital flows, the lived experience of a depreciating rupee — and build small data projects to back the arguments up. Currently based in the US, watching the world with one foot in two economies.`,
-
-  // ─── 2. HANDLES ───────────────────────────────────────────────
-  // Substack: the part before .substack.com
-  // e.g. for "ramakrishna.substack.com" → 'ramakrishna'
-  substackHandle: 'rksignal',
-
-  // OR — if you use a custom Substack domain, set this and ignore the above
-  substackUrl: null, // e.g. 'https://essays.yourname.com'
-
-  githubHandle: 'ramakrishnasonakam',
-
-  // ─── 3. CONTACT (leave any blank '' to hide it) ───────────────
-  email: 'rsonakam@gmail.com',
-  location: 'New York, USA',
-  // twitter: '',     // just the handle, no @
-  linkedin: 'https://www.linkedin.com/in/ramakrishna-sonakam',    // just the handle
+  // Concise about-section paragraph. 2–4 sentences.
+  // Speak in first person. Be specific, not generic.
+  // bio: `I trained as an engineer, then studied data science. I write about India's macroeconomic story — currency, capital flows, the lived experience of a depreciating rupee — and build small data projects to back the arguments up. Currently based in the US, watching the world with one foot in two economies.`,
 };
 
 
-// ─── 4. WHICH PROJECTS TO SHOW ──────────────────────────────────
-// List the EXACT repo names from your GitHub, in display order.
-// e.g. for github.com/ramakrishnasonakam/rupee-watch → 'rupee-watch'
-// Add or remove any number — site adapts automatically.
-export const FEATURED_PROJECTS = [
-  'repo-name-one',
-  'repo-name-two',
-  'repo-name-three',
-];
+// ─── 2. HANDLES ─────────────────────────────────────────────────
+export const HANDLES = {
+  // Substack: the part before .substack.com
+  // e.g. "ramakrishna" for "ramakrishna.substack.com"
+  substack: 'rksignal',
+
+  // OR — custom Substack domain. Set this and ignore the above.
+  substackUrl: null, // e.g. 'https://essays.yourname.com'
+
+  github: 'ramakrishnasonakam',
+  email: 'rsonakam@gmail.com',
+  linkedin: 'ramakrishna-sonakam',  // just the handle, e.g. 'yourname'
+};
 
 
-// ─── 5. HOW MANY ESSAYS TO SHOW ─────────────────────────────────
-// The N most recent Substack posts. Set higher when you publish more.
-export const ESSAYS_LIMIT = 2;
+// ─── 3. HOW MANY ESSAYS TO SHOW ─────────────────────────────────
+export const ESSAYS_LIMIT = 3;
 
 
 // ════════════════════════════════════════════════════════════════
-//   You don't need to edit below this line.
+//   No edits needed below this line.
 // ════════════════════════════════════════════════════════════════
 
 export const SUBSTACK_BASE =
-  SITE.substackUrl || `https://${SITE.substackHandle}.substack.com`;
+  HANDLES.substackUrl || `https://${HANDLES.substack}.substack.com`;
 export const SUBSTACK_RSS = `${SUBSTACK_BASE}/feed`;
-export const GITHUB_API = `https://api.github.com/users/${SITE.githubHandle}/repos?per_page=100`;
+export const GITHUB_REPOS_API = `https://api.github.com/users/${HANDLES.github}/repos?per_page=100&sort=updated`;
+export const githubReadmeApi = (repo) =>
+  `https://api.github.com/repos/${HANDLES.github}/${repo}/readme`;

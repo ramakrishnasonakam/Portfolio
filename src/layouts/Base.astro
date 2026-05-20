@@ -1,18 +1,10 @@
 ---
 import '../styles/global.css';
-import { SITE } from '../lib/config.js';
+import { SITE, HANDLES } from '../lib/config.js';
 
 const { title, description } = Astro.props;
 const pageTitle = title ? `${title} — ${SITE.name}` : SITE.name;
 const pageDesc = description || SITE.tagline;
-const currentPath = Astro.url.pathname;
-
-const navLinks = [
-  { href: '/', label: 'Index', num: '01' },
-  { href: '/essays', label: 'Essays', num: '02' },
-  { href: '/projects', label: 'Projects', num: '03' },
-  { href: '/about', label: 'About', num: '04' },
-];
 ---
 <!doctype html>
 <html lang="en">
@@ -27,81 +19,22 @@ const navLinks = [
     <title>{pageTitle}</title>
   </head>
   <body>
-    <!-- ╔═══ FIXED RULE AT TOP ═══╗ -->
-    <div class="fixed top-0 left-0 right-0 h-px bg-ink z-50"></div>
-
-    <div class="mx-auto max-w-[1280px] px-6 sm:px-10 lg:px-16">
-
-      <!-- ╔═══ HEADER : 12-col grid, asymmetric ═══╗ -->
-      <header class="pt-10 pb-6 grid grid-cols-12 gap-4 items-baseline">
-        <a
-          href="/"
-          class="col-span-12 sm:col-span-4 font-sans font-bold text-ink tracking-tightest text-xl leading-none"
-        >
+    <!-- ─── STICKY NAV (subtle) ─── -->
+    <nav class="sticky top-0 z-40 bg-bg/80 backdrop-blur-md border-b border-rule">
+      <div class="mx-auto max-w-[1180px] px-6 sm:px-10 lg:px-14 py-4 flex items-baseline justify-between gap-6">
+        <a href="#top" class="font-display text-lg text-ink tracking-tighter font-medium">
           {SITE.name}
-          <span class="block mt-1 text-[10px] font-mono font-normal uppercase tracking-[0.2em] text-muted">
-            {SITE.location}
-          </span>
         </a>
+        <ul class="flex items-baseline gap-6 sm:gap-8 font-mono text-[11px] uppercase tracking-[0.18em]">
+          <li><a href="#projects" class="text-grey hover:text-ink transition-colors">Projects</a></li>
+          <li><a href="#essays" class="text-grey hover:text-ink transition-colors">Essays</a></li>
+          <li><a href="#contact" class="text-grey hover:text-ink transition-colors">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
 
-        <nav class="col-span-12 sm:col-span-8 sm:justify-self-end">
-          <ul class="flex items-baseline gap-x-6 sm:gap-x-8 font-mono text-[11px] uppercase tracking-[0.15em]">
-            {navLinks.map(({ href, label, num }) => {
-              const isActive =
-                href === '/' ? currentPath === '/' : currentPath.startsWith(href);
-              return (
-                <li>
-                  <a href={href} class="group inline-flex items-baseline gap-1.5">
-                    <span class={isActive ? 'text-signal' : 'text-muted group-hover:text-ink transition-colors'}>
-                      {num}
-                    </span>
-                    <span class={isActive ? 'text-ink' : 'text-ink/70 group-hover:text-ink transition-colors'}>
-                      {label}
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-      </header>
-
-      <!-- ╔═══ HORIZONTAL RULE ═══╗ -->
-      <div class="h-px bg-rule mb-16 sm:mb-24"></div>
-
-      <!-- ╔═══ MAIN ═══╗ -->
-      <main class="pb-32">
-        <slot />
-      </main>
-
-      <!-- ╔═══ FOOTER ═══╗ -->
-      <footer class="pt-10 pb-12 border-t border-rule grid grid-cols-12 gap-4 items-baseline">
-        <div class="col-span-12 sm:col-span-6 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-          © {new Date().getFullYear()} — {SITE.name}
-        </div>
-        <div class="col-span-12 sm:col-span-6 sm:justify-self-end flex flex-wrap gap-x-5 gap-y-1 font-mono text-[10px] uppercase tracking-[0.18em]">
-          {SITE.email && (
-            <a href={`mailto:${SITE.email}`} class="text-muted hover:text-ink transition-colors">Email</a>
-          )}
-          <a
-            href={SITE.substackUrl || `https://${SITE.substackHandle}.substack.com`}
-            target="_blank" rel="noopener"
-            class="text-muted hover:text-ink transition-colors"
-          >Substack</a>
-          <a
-            href={`https://github.com/${SITE.githubHandle}`}
-            target="_blank" rel="noopener"
-            class="text-muted hover:text-ink transition-colors"
-          >GitHub</a>
-          {SITE.twitter && (
-            <a href={`https://twitter.com/${SITE.twitter}`} target="_blank" rel="noopener" class="text-muted hover:text-ink transition-colors">Twitter</a>
-          )}
-          {SITE.linkedin && (
-            <a href={`https://linkedin.com/in/${SITE.linkedin}`} target="_blank" rel="noopener" class="text-muted hover:text-ink transition-colors">LinkedIn</a>
-          )}
-        </div>
-      </footer>
-
+    <div class="mx-auto max-w-[1180px] px-6 sm:px-10 lg:px-14">
+      <slot />
     </div>
   </body>
 </html>

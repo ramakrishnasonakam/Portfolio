@@ -1,24 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
-import { SITE } from '../lib/config.js';
+import Icon from '../components/Icon.astro';
+import { SITE, HANDLES, SUBSTACK_BASE } from '../lib/config.js';
 import { getEssays } from '../lib/essays.js';
 import { getProjects } from '../lib/projects.js';
 
 const essays = await getEssays();
 const projects = await getProjects();
-
-const feed = [
-  ...essays.map((e) => ({
-    kind: 'essay', title: e.title, url: e.url,
-    description: e.description, date: e.date,
-    meta: `${e.readingTime} min read`,
-  })),
-  ...projects.map((p) => ({
-    kind: 'project', title: p.name, url: p.url,
-    description: p.description, date: p.updated,
-    meta: [p.language, p.stars > 0 ? `★ ${p.stars}` : null].filter(Boolean).join(' · '),
-  })),
-].sort((a, b) => new Date(b.date) - new Date(a.date));
 
 function fmt(d) {
   if (!d) return '';
@@ -26,93 +14,132 @@ function fmt(d) {
     year: 'numeric', month: 'short', day: 'numeric',
   });
 }
+
+// Split the tagline cleanly: bold first sentence, italic continuation.
+const taglineParts = SITE.tagline.split(/\.(?=\s|$)/).filter((s) => s.trim());
+const taglineLead = taglineParts[0] + '.';
+const taglineRest = taglineParts.slice(1).join('. ').trim();
 ---
 <Base>
-  <!-- ╔═══ HERO ═══╗  asymmetric 12-col grid -->
-  <section class="grid grid-cols-12 gap-x-4 gap-y-10 mb-28 sm:mb-40 rise">
-    <!-- index label -->
-    <div class="col-span-12 sm:col-span-2 font-mono text-[10px] uppercase tracking-[0.22em] text-muted pt-3">
-      § 00 / Index
-    </div>
+  <span id="top"></span>
 
-    <!-- giant tagline -->
-    <h1 class="col-span-12 sm:col-span-10 font-sans font-bold text-ink leading-none tracking-tightest text-[clamp(2.5rem,7vw,5.5rem)]">
-      {SITE.tagline.split('.').slice(0, 1).join('.')}<span class="text-signal">.</span>
-    </h1>
-
-    <div class="col-span-12 sm:col-span-2"></div>
-    <p class="col-span-12 sm:col-span-7 font-sans text-lg sm:text-xl text-body leading-snug max-w-2xl mt-2">
-      {SITE.tagline.split('.').slice(1).join('.').trim()}
+  <!-- ╔═══════════════════════════════════════════════════ HERO ═══════════════════════════════════════════════════╗ -->
+  <section class="min-h-[80vh] flex flex-col justify-center py-20 sm:py-24 rise">
+    <p class="eyebrow mb-8">
+      <span class="inline-block w-8 h-px bg-blue align-middle mr-3"></span>
+      Portfolio · {new Date().getFullYear()}
     </p>
 
-    <!-- nav cues -->
-    <div class="col-span-12 sm:col-span-2"></div>
-    <div class="col-span-12 sm:col-span-10 flex flex-wrap gap-x-8 gap-y-2 font-mono text-[11px] uppercase tracking-[0.18em] mt-4">
-      <a href="/essays" class="link text-ink">Read essays →</a>
-      <a href="/projects" class="link text-ink">See projects →</a>
-      <a href="/about" class="link text-muted hover:text-ink transition-colors">About</a>
+    <h1 class="font-display text-ink leading-[1.02] tracking-tightest font-medium text-[clamp(2.75rem,7.5vw,6rem)] max-w-5xl">
+      {SITE.name}
+    </h1>
+
+    <p class="font-display italic text-blue text-[clamp(1.5rem,3.2vw,2.25rem)] leading-snug mt-6 max-w-3xl">
+      {taglineLead}
+    </p>
+
+    {taglineRest && (
+      <p class="font-sans text-grey text-lg sm:text-xl leading-relaxed mt-5 max-w-2xl">
+        {taglineRest}
+      </p>
+    )}
+
+    <!-- Bio -->
+    <div class="mt-14 max-w-2xl">
+      <p class="font-sans text-[17px] leading-[1.75] text-body">
+        {SITE.bio}
+      </p>
+    </div>
+
+    <!-- CTAs -->
+    <div class="mt-12 flex flex-wrap items-center gap-x-7 gap-y-3 font-mono text-[11px] uppercase tracking-[0.18em]">
+      <a href="#projects" class="inline-flex items-center gap-2 text-ink link">
+        See projects <Icon name="arrowUpRight" size={14} />
+      </a>
+      <a href="#essays" class="inline-flex items-center gap-2 text-ink link">
+        Read essays <Icon name="arrowUpRight" size={14} />
+      </a>
+      {HANDLES.email && (
+        <a href={`mailto:${HANDLES.email}`} class="inline-flex items-center gap-2 text-grey hover:text-ink transition-colors">
+          <Icon name="mail" size={14} /> Get in touch
+        </a>
+      )}
+    </div>
+
+    <!-- subtle scroll cue -->
+    <div class="mt-24 text-grey">
+      <Icon name="chevronDown" size={20} class="animate-pulse" />
     </div>
   </section>
 
-  <!-- ╔═══ FEED ═══╗ -->
-  <section>
-    <header class="grid grid-cols-12 gap-x-4 mb-8 items-end border-b border-ink pb-3">
-      <div class="col-span-2 font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
-        § 01
+
+  <!-- ╔═════════════════════════════════════════════ PROJECTS ════════════════════════════════════════════════╗ -->
+  <section id="projects" class="py-24 sm:py-32 border-t border-rule">
+    <header class="flex items-baseline justify-between gap-6 mb-14 flex-wrap">
+      <div>
+        <p class="eyebrow mb-3">
+          <Icon name="code" size={12} class="inline-block align-baseline mr-1.5" />
+          § 01 — Projects
+        </p>
+        <h2 class="font-display text-ink text-4xl sm:text-5xl tracking-tightest font-medium">
+          Things I've built<span class="text-blue">.</span>
+        </h2>
       </div>
-      <h2 class="col-span-7 font-sans font-bold text-2xl text-ink tracking-tightest">
-        Recently
-      </h2>
-      <div class="col-span-3 text-right font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-        {feed.length} items
-      </div>
+      <a
+        href={`https://github.com/${HANDLES.github}`}
+        target="_blank" rel="noopener"
+        class="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-grey hover:text-ink transition-colors"
+      >
+        All on GitHub <Icon name="arrowUpRight" size={14} />
+      </a>
     </header>
 
-    {feed.length === 0 ? (
-      <p class="text-muted italic max-w-xl mt-6">
-        Nothing here yet. Once <code class="font-mono text-xs bg-rule px-1.5 py-0.5">substackHandle</code>
-        and <code class="font-mono text-xs bg-rule px-1.5 py-0.5">FEATURED_PROJECTS</code> are set in
-        <code class="font-mono text-xs bg-rule px-1.5 py-0.5">src/lib/config.js</code>, content appears here.
+    {projects.length === 0 ? (
+      <p class="text-grey italic max-w-xl">
+        No projects yet — or the GitHub handle in
+        <code class="font-mono text-xs bg-wash px-1.5 py-0.5 mx-1">src/lib/config.js</code>
+        couldn't be reached.
       </p>
     ) : (
-      <ul>
-        {feed.map((item, i) => (
-          <li class="border-b border-rule">
+      <ul class="grid sm:grid-cols-2 gap-5">
+        {projects.map((p) => (
+          <li>
             <a
-              href={item.url}
-              target={item.url.startsWith('http') ? '_blank' : null}
-              rel={item.url.startsWith('http') ? 'noopener' : null}
-              class="row block py-8 px-4 -mx-4"
+              href={p.url}
+              target="_blank"
+              rel="noopener"
+              class="card group block h-full p-7 border border-rule bg-bg"
             >
-              <div class="grid grid-cols-12 gap-x-4 items-baseline">
-                <div class="col-span-2 font-mono text-[10px] uppercase tracking-[0.22em] muted-on-hover text-muted">
-                  {String(i + 1).padStart(2, '0')}
-                </div>
-                <div class="col-span-7">
-                  <div class="flex items-baseline gap-3 mb-2">
-                    <span class={`font-mono text-[10px] uppercase tracking-[0.22em] signal-on-hover ${
-                      item.kind === 'essay' ? 'text-signal' : 'text-ink'
-                    }`}>
-                      {item.kind === 'essay' ? 'Essay' : 'Project'}
-                    </span>
-                    {item.meta && (
-                      <span class="font-mono text-[10px] uppercase tracking-[0.18em] muted-on-hover text-muted">
-                        {item.meta}
-                      </span>
-                    )}
-                  </div>
-                  <h3 class="font-sans font-semibold text-2xl sm:text-3xl tracking-tighter leading-snug">
-                    {item.title}
-                  </h3>
-                  {item.description && (
-                    <p class="mt-3 text-[15px] leading-relaxed max-w-xl muted-on-hover text-body">
-                      {item.description}
-                    </p>
-                  )}
-                </div>
-                <div class="col-span-3 text-right font-mono text-[10px] uppercase tracking-[0.18em] muted-on-hover text-muted">
-                  {fmt(item.date)}
-                </div>
+              <div class="flex items-start justify-between gap-4 mb-4">
+                <h3 class="font-display text-xl sm:text-2xl text-ink tracking-tighter font-medium group-hover:text-blue transition-colors">
+                  {p.name}
+                </h3>
+                <Icon name="arrowUpRight" size={18} class="text-grey group-hover:text-blue transition-colors flex-shrink-0 mt-1" />
+              </div>
+
+              {p.description ? (
+                <p class="text-body text-[14.5px] leading-relaxed mb-5 min-h-[3rem]">
+                  {p.description}
+                </p>
+              ) : (
+                <p class="text-soft italic text-[14px] mb-5 min-h-[3rem]">
+                  No description yet — add one to this repo's README or GitHub description.
+                </p>
+              )}
+
+              <div class="flex items-center gap-4 flex-wrap font-mono text-[10px] uppercase tracking-[0.18em] text-grey">
+                {p.language && (
+                  <span class="inline-flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 bg-blue rounded-full"></span>
+                    {p.language}
+                  </span>
+                )}
+                {p.stars > 0 && (
+                  <span class="inline-flex items-center gap-1">
+                    <Icon name="star" size={11} /> {p.stars}
+                  </span>
+                )}
+                <span>Updated {fmt(p.updated)}</span>
               </div>
             </a>
           </li>
@@ -120,4 +147,128 @@ function fmt(d) {
       </ul>
     )}
   </section>
+
+
+  <!-- ╔══════════════════════════════════════════════ ESSAYS ═════════════════════════════════════════════════╗ -->
+  <section id="essays" class="py-24 sm:py-32 border-t border-rule">
+    <header class="flex items-baseline justify-between gap-6 mb-14 flex-wrap">
+      <div>
+        <p class="eyebrow mb-3">
+          <Icon name="feather" size={12} class="inline-block align-baseline mr-1.5" />
+          § 02 — Essays
+        </p>
+        <h2 class="font-display text-ink text-4xl sm:text-5xl tracking-tightest font-medium">
+          Things I've written<span class="text-blue">.</span>
+        </h2>
+      </div>
+      <a
+        href={SUBSTACK_BASE}
+        target="_blank" rel="noopener"
+        class="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-grey hover:text-ink transition-colors"
+      >
+        Read on Substack <Icon name="arrowUpRight" size={14} />
+      </a>
+    </header>
+
+    {essays.length === 0 ? (
+      <p class="text-grey italic max-w-xl">
+        No essays yet — or the Substack handle in
+        <code class="font-mono text-xs bg-wash px-1.5 py-0.5 mx-1">src/lib/config.js</code>
+        isn't set.
+      </p>
+    ) : (
+      <ul class="divide-y divide-rule">
+        {essays.map((essay, i) => (
+          <li>
+            <a
+              href={essay.url}
+              target="_blank"
+              rel="noopener"
+              class="group block py-8 grid grid-cols-12 gap-x-4 items-baseline hover:bg-wash transition-colors px-3 -mx-3 rounded-sm"
+            >
+              <span class="col-span-2 sm:col-span-1 font-mono text-[10px] uppercase tracking-[0.2em] text-grey">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div class="col-span-10 sm:col-span-8">
+                <h3 class="font-display text-2xl sm:text-3xl text-ink tracking-tighter font-medium leading-snug group-hover:text-blue transition-colors">
+                  {essay.title}
+                </h3>
+                {essay.subtitle && (
+                  <p class="mt-2 font-sans italic text-grey text-[15px] leading-relaxed max-w-2xl">
+                    {essay.subtitle}
+                  </p>
+                )}
+              </div>
+              <div class="hidden sm:block col-span-3 text-right font-mono text-[10px] uppercase tracking-[0.18em] text-grey">
+                <div>{fmt(essay.date)}</div>
+                <div class="mt-1">{essay.readingTime} min</div>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+
+  <!-- ╔══════════════════════════════════════════════ FOOTER ═════════════════════════════════════════════════╗ -->
+  <footer id="contact" class="py-20 border-t border-rule">
+    <div class="grid grid-cols-12 gap-6 items-end">
+      <div class="col-span-12 sm:col-span-6">
+        <p class="eyebrow mb-3">Contact</p>
+        <p class="font-display text-3xl sm:text-4xl text-ink tracking-tightest font-medium leading-tight">
+          Let's talk<span class="text-blue">.</span>
+        </p>
+        {HANDLES.email && (
+          <a href={`mailto:${HANDLES.email}`} class="mt-4 inline-block font-sans text-lg text-body link">
+            {HANDLES.email}
+          </a>
+        )}
+      </div>
+
+      <div class="col-span-12 sm:col-span-6 sm:justify-self-end">
+        <ul class="flex items-center gap-4">
+          {HANDLES.email && (
+            <li>
+              <a
+                href={`mailto:${HANDLES.email}`}
+                aria-label="Email"
+                class="inline-flex items-center justify-center w-11 h-11 border border-rule rounded-full text-grey hover:text-blue hover:border-blue transition-colors"
+              >
+                <Icon name="mail" size={18} />
+              </a>
+            </li>
+          )}
+          {HANDLES.linkedin && (
+            <li>
+              <a
+                href={`https://linkedin.com/in/${HANDLES.linkedin}`}
+                target="_blank" rel="noopener"
+                aria-label="LinkedIn"
+                class="inline-flex items-center justify-center w-11 h-11 border border-rule rounded-full text-grey hover:text-blue hover:border-blue transition-colors"
+              >
+                <Icon name="linkedin" size={18} />
+              </a>
+            </li>
+          )}
+          <li>
+            <a
+              href={`https://github.com/${HANDLES.github}`}
+              target="_blank" rel="noopener"
+              aria-label="GitHub"
+              class="inline-flex items-center justify-center w-11 h-11 border border-rule rounded-full text-grey hover:text-blue hover:border-blue transition-colors"
+            >
+              <Icon name="github" size={18} />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-16 pt-6 border-t border-rule flex items-center justify-between gap-4 flex-wrap font-mono text-[10px] uppercase tracking-[0.18em] text-grey">
+      <span>© {new Date().getFullYear()} {SITE.name}. All rights reserved.</span>
+      <a href="#top" class="hover:text-ink transition-colors">Back to top ↑</a>
+    </div>
+  </footer>
+
 </Base>

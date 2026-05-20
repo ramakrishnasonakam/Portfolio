@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,30..70&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,25 +6,32 @@
 
 @layer base {
   html {
-    background: #FFFFFF;
     scroll-behavior: smooth;
+    background: #FFFFFF;
   }
   body {
-    @apply bg-canvas text-body font-sans antialiased;
+    @apply bg-bg text-body font-sans antialiased;
     font-feature-settings: 'ss01', 'cv11', 'cv05';
   }
+  .font-display {
+    font-variation-settings: 'opsz' 144, 'SOFT' 40;
+  }
   ::selection {
-    background: theme('colors.ink');
+    background: theme('colors.blue');
     color: #FFFFFF;
+  }
+  /* Smooth offset for in-page anchors so the fixed-ish nav doesn't cover headings */
+  section[id] {
+    scroll-margin-top: 5rem;
   }
 }
 
 @layer components {
-  /* Subtle entrance — restraint over flourish */
+  /* Restrained entrance */
   .rise > * {
     opacity: 0;
-    transform: translateY(6px);
-    animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    transform: translateY(8px);
+    animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
   }
   .rise > *:nth-child(1) { animation-delay: 0.0s; }
   .rise > *:nth-child(2) { animation-delay: 0.08s; }
@@ -32,15 +39,12 @@
   .rise > *:nth-child(4) { animation-delay: 0.24s; }
   .rise > *:nth-child(5) { animation-delay: 0.32s; }
   .rise > *:nth-child(6) { animation-delay: 0.40s; }
-  .rise > *:nth-child(7) { animation-delay: 0.48s; }
-  .rise > *:nth-child(8) { animation-delay: 0.56s; }
-  .rise > *:nth-child(n+9) { animation-delay: 0.64s; }
-
+  .rise > *:nth-child(n+7) { animation-delay: 0.48s; }
   @keyframes rise {
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Underline-from-left on hover */
+  /* Underline-from-left link */
   .link {
     position: relative;
     display: inline-block;
@@ -53,18 +57,22 @@
     background: currentColor;
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
   .link:hover::after { transform: scaleX(1); }
 
-  /* Item row that fills with ink on hover (sharp, no rounded corners) */
-  .row {
-    transition: background 0.25s ease, color 0.25s ease;
+  /* Card */
+  .card {
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   }
-  .row:hover {
-    background: theme('colors.ink');
-    color: #FFFFFF;
+  .card:hover {
+    border-color: theme('colors.blue');
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -12px rgba(42, 61, 92, 0.18);
   }
-  .row:hover .muted-on-hover { color: #999999; }
-  .row:hover .signal-on-hover { color: theme('colors.signal'); }
+
+  /* Section heading: tiny eyebrow + serif display */
+  .eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-[0.22em] text-blue;
+  }
 }
