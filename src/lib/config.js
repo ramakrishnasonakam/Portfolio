@@ -1,43 +1,57 @@
 // ════════════════════════════════════════════════════════════════
 //
-//   ✏️  EDIT THIS FILE — IT IS THE ONLY FILE YOU NEED TO TOUCH.
+//   ✏️  EDIT THIS FILE — IT IS THE ONLY FILE YOU TOUCH.
 //
-//   Every value flows through the site. Save → commit → push.
-//   Vercel auto-rebuilds in ~60s.
+//   Every value flows through the site.
+//   Save → git commit → git push → Vercel rebuilds.
 //
 // ════════════════════════════════════════════════════════════════
 
 
-// ─── 1. WHO YOU ARE ─────────────────────────────────────────────
+// ─── 1. IDENTITY ────────────────────────────────────────────────
 export const SITE = {
-  name: 'Ramakrishna Sonakam',
+  name: 'YOUR FULL NAME',
 
-  // The hero. One line. End with period.
-  // This is the largest text on the site — make it count.
-  tagline: 'Engineer. Analyst. Teacher. Writer',
-
-  // Concise about-section paragraph. 2–4 sentences.
-  // Speak in first person. Be specific, not generic.
-  // bio: `I trained as an engineer, then studied data science. I write about India's macroeconomic story — currency, capital flows, the lived experience of a depreciating rupee — and build small data projects to back the arguments up. Currently based in the US, watching the world with one foot in two economies.`,
+  // Four words. No verbs. No connectors. Just the identities.
+  // These appear under your name in the hero.
+  roles: ['Engineer', 'Analyst', 'Writer', 'Teacher'],
 };
 
 
 // ─── 2. HANDLES ─────────────────────────────────────────────────
 export const HANDLES = {
-  // Substack: the part before .substack.com
-  // e.g. "ramakrishna" for "ramakrishna.substack.com"
-  substack: 'rksignal',
+  // Substack: part before .substack.com  (or set substackUrl below)
+  substack: 'YOUR_SUBSTACK',
+  substackUrl: null,
 
-  // OR — custom Substack domain. Set this and ignore the above.
-  substackUrl: null, // e.g. 'https://essays.yourname.com'
+  // Medium: handle WITH the @ — e.g. '@rsonakam'
+  medium: '@rsonakam',
 
   github: 'ramakrishnasonakam',
-  email: 'rsonakam@gmail.com',
-  linkedin: 'ramakrishna-sonakam',  // just the handle, e.g. 'yourname'
+  email: 'you@example.com',
+  linkedin: '',  // handle only, e.g. 'yourname'
 };
 
 
-// ─── 3. HOW MANY ESSAYS TO SHOW ─────────────────────────────────
+// ─── 3. PROJECT METRIC BADGES (optional) ────────────────────────
+// Per-repo metric badge shown beside the description.
+// Repo names must match exactly. Repos not listed here just show no badge.
+// Keep badges punchy — 2-5 words. No periods.
+//
+// Examples that work (notice they're outcomes, not tasks):
+//   '+12% precision gain'
+//   '8 weeks to production'
+//   '4 datasets unified'
+//   '~340ms inference'
+//
+export const PROJECT_BADGES = {
+  // 'repo-name-here': '+15% accuracy lift',
+  // 'another-repo': 'Top 5% Kaggle',
+};
+
+
+// ─── 4. LIMITS ──────────────────────────────────────────────────
+export const PROJECTS_LIMIT = 3;
 export const ESSAYS_LIMIT = 3;
 
 
@@ -48,6 +62,8 @@ export const ESSAYS_LIMIT = 3;
 export const SUBSTACK_BASE =
   HANDLES.substackUrl || `https://${HANDLES.substack}.substack.com`;
 export const SUBSTACK_RSS = `${SUBSTACK_BASE}/feed`;
+export const MEDIUM_BASE = `https://medium.com/${HANDLES.medium}`;
+export const MEDIUM_RSS = `https://medium.com/feed/${HANDLES.medium}`;
 export const GITHUB_REPOS_API = `https://api.github.com/users/${HANDLES.github}/repos?per_page=100&sort=updated`;
 export const githubReadmeApi = (repo) =>
   `https://api.github.com/repos/${HANDLES.github}/${repo}/readme`;

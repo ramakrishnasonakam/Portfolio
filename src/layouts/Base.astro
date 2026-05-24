@@ -1,10 +1,10 @@
 ---
 import '../styles/global.css';
-import { SITE, HANDLES } from '../lib/config.js';
+import { SITE } from '../lib/config.js';
 
 const { title, description } = Astro.props;
 const pageTitle = title ? `${title} — ${SITE.name}` : SITE.name;
-const pageDesc = description || SITE.tagline;
+const pageDesc = description || SITE.roles.join(' · ');
 ---
 <!doctype html>
 <html lang="en">
@@ -16,24 +16,26 @@ const pageDesc = description || SITE.tagline;
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDesc} />
     <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#000000" />
     <title>{pageTitle}</title>
   </head>
-  <body>
-    <!-- ─── STICKY NAV (subtle) ─── -->
-    <nav class="sticky top-0 z-40 bg-bg/80 backdrop-blur-md border-b border-rule">
-      <div class="mx-auto max-w-[1180px] px-6 sm:px-10 lg:px-14 py-4 flex items-baseline justify-between gap-6">
-        <a href="#top" class="font-display text-lg text-ink tracking-tighter font-medium">
-          {SITE.name}
+  <body class="vignette">
+
+    <!-- Sticky nav: minimal, monogram + 3 anchors -->
+    <nav class="sticky top-0 z-40 bg-void/70 backdrop-blur-sm border-b border-veil/30">
+      <div class="mx-auto max-w-[1200px] px-6 sm:px-10 lg:px-16 py-5 flex items-center justify-between gap-6">
+        <a href="#top" class="font-display text-gold text-lg tracking-tighter font-medium italic">
+          {SITE.name.split(' ').map((w) => w[0]).join('')}
         </a>
-        <ul class="flex items-baseline gap-6 sm:gap-8 font-mono text-[11px] uppercase tracking-[0.18em]">
-          <li><a href="#projects" class="text-grey hover:text-ink transition-colors">Projects</a></li>
-          <li><a href="#essays" class="text-grey hover:text-ink transition-colors">Essays</a></li>
-          <li><a href="#contact" class="text-grey hover:text-ink transition-colors">Contact</a></li>
+        <ul class="flex items-center gap-7 sm:gap-10 font-mono text-[10px] uppercase tracking-regal text-bone">
+          <li><a href="#work" class="hover:text-gold transition-colors duration-500">Work</a></li>
+          <li><a href="#writing" class="hover:text-gold transition-colors duration-500">Writing</a></li>
+          <li><a href="#contact" class="hover:text-gold transition-colors duration-500">Contact</a></li>
         </ul>
       </div>
     </nav>
 
-    <div class="mx-auto max-w-[1180px] px-6 sm:px-10 lg:px-14">
+    <div class="mx-auto max-w-[1200px] px-6 sm:px-10 lg:px-16">
       <slot />
     </div>
   </body>

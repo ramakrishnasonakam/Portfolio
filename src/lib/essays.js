@@ -1,5 +1,5 @@
 import Parser from 'rss-parser';
-import { SUBSTACK_RSS, ESSAYS_LIMIT } from './config.js';
+import { SUBSTACK_RSS, MEDIUM_RSS, ESSAYS_LIMIT, HANDLES } from './config.js';
 
 const parser = new Parser({
   customFields: {
@@ -11,29 +11,49 @@ const parser = new Parser({
 });
 
 export async function getEssays() {
-  if (SUBSTACK_RSS.includes('YOUR_SUBSTACK')) return [];
+  const sources = [];
 
+  if (!SUBSTACK_RSS.includes('YOUR_SUBSTACK')) {
+    sources.push(fetchFeed(SUBSTACK_RSS, 'Substack'));
+  }
+  if (HANDLES.medium && !HANDLES.medium.includes('YOUR_MEDIUM')) {
+    sources.push(fetchFeed(MEDIUM_RSS, 'Medium'));
+  }
+
+  const results = await Promise.all(sources);
+  const all = results.flat();
+
+  // Sort by date descending, then take the top N
+  return all
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, ESSAYS_LIMIT);
+}
+
+async function fetchFeed(url, sourceLabel) {
   try {
-    const feed = await parser.parseURL(SUBSTACK_RSS);
-    return (feed.items || []).slice(0, ESSAYS_LIMIT).map((item) => ({
-      title: item.title || 'Untitled',
+    const feed = await parser.parseURL(url);
+    return (feed.items || []).map((item) => ({
+      title: cleanTitle(item.title),
       url: item.link,
       date: item.isoDate || item.pubDate,
-      // Substack puts the subtitle in description (sometimes content too)
-      subtitle: stripHtml(item.descriptionRaw || item.contentSnippet || '').slice(0, 200),
-      readingTime: estimateReadingTime(item.contentEncoded || item.content || ''),
+      subtitle: extractSubtitle(item, sourceLabel),
+      source: sourceLabel,
     }));
   } catch (err) {
-    console.warn('[essays] could not fetch Substack feed:', err.message);
+    console.warn(`[essays] failed to fetch ${sourceLabel}:`, err.message);
     return [];
   }
 }
 
-function stripHtml(s) {
-  return s.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+function cleanTitle(t) {
+  return (t || 'Untitled').trim();
 }
 
-function estimateReadingTime(html) {
-  const words = stripHtml(html).split(/\s+/).length;
-  return Math.max(1, Math.round(words / 220));
+function extractSubtitle(item, source) {
+  // Substack puts a real subtitle in description. Medium puts the article body in description.
+  // For Medium, we strip HTML and take the first ~160 chars.
+  const raw = item.descriptionRaw || item.contentSnippet || '';
+  const text = raw.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  if (!text) return '';
+  return text.length > 180 ? text.slice(0, 177).replace(/\s+\S*$/, '') + '…' : text;
 }

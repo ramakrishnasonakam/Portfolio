@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
-import { SITE, HANDLES, SUBSTACK_BASE } from '../lib/config.js';
+import { SITE, HANDLES, SUBSTACK_BASE, MEDIUM_BASE } from '../lib/config.js';
 import { getEssays } from '../lib/essays.js';
 import { getProjects } from '../lib/projects.js';
 
@@ -14,132 +14,129 @@ function fmt(d) {
     year: 'numeric', month: 'short', day: 'numeric',
   });
 }
-
-// Split the tagline cleanly: bold first sentence, italic continuation.
-const taglineParts = SITE.tagline.split(/\.(?=\s|$)/).filter((s) => s.trim());
-const taglineLead = taglineParts[0] + '.';
-const taglineRest = taglineParts.slice(1).join('. ').trim();
 ---
 <Base>
   <span id="top"></span>
 
-  <!-- ╔═══════════════════════════════════════════════════ HERO ═══════════════════════════════════════════════════╗ -->
-  <section class="min-h-[80vh] flex flex-col justify-center py-20 sm:py-24 rise">
-    <p class="eyebrow mb-8">
-      <span class="inline-block w-8 h-px bg-blue align-middle mr-3"></span>
-      Portfolio · {new Date().getFullYear()}
-    </p>
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="min-h-[92vh] flex flex-col justify-center py-32 rise">
 
-    <h1 class="font-display text-ink leading-[1.02] tracking-tightest font-medium text-[clamp(2.75rem,7.5vw,6rem)] max-w-5xl">
+    <!-- Tiny eyebrow — coordinates, no greeting -->
+    <div class="eyebrow flex items-center gap-3 mb-12">
+      <span class="inline-block w-10 h-px bg-gold/60"></span>
+      <span>MMXXVI / Portfolio</span>
+    </div>
+
+    <!-- Name. Massive. Display serif. Italic accent letter. -->
+    <h1 class="font-display text-ivory leading-[0.95] tracking-tightest font-light text-[clamp(3.5rem,11vw,9rem)] max-w-6xl">
       {SITE.name}
     </h1>
 
-    <p class="font-display italic text-blue text-[clamp(1.5rem,3.2vw,2.25rem)] leading-snug mt-6 max-w-3xl">
-      {taglineLead}
-    </p>
-
-    {taglineRest && (
-      <p class="font-sans text-grey text-lg sm:text-xl leading-relaxed mt-5 max-w-2xl">
-        {taglineRest}
-      </p>
-    )}
-
-    <!-- Bio -->
-    <div class="mt-14 max-w-2xl">
-      <p class="font-sans text-[17px] leading-[1.75] text-body">
-        {SITE.bio}
-      </p>
+    <!-- Roles. The whole bio. -->
+    <div class="mt-12 max-w-3xl">
+      <ul class="flex flex-wrap items-center gap-x-6 gap-y-3 font-display italic text-bone text-[clamp(1.5rem,3vw,2.25rem)] font-light">
+        {SITE.roles.map((role, i) => (
+          <>
+            {i > 0 && <li class="text-gold/60 font-sans not-italic text-sm">◆</li>}
+            <li class={i === 0 || i === 3 ? 'text-ivory' : 'text-bone'}>{role}</li>
+          </>
+        ))}
+      </ul>
     </div>
 
-    <!-- CTAs -->
-    <div class="mt-12 flex flex-wrap items-center gap-x-7 gap-y-3 font-mono text-[11px] uppercase tracking-[0.18em]">
-      <a href="#projects" class="inline-flex items-center gap-2 text-ink link">
-        See projects <Icon name="arrowUpRight" size={14} />
-      </a>
-      <a href="#essays" class="inline-flex items-center gap-2 text-ink link">
-        Read essays <Icon name="arrowUpRight" size={14} />
-      </a>
-      {HANDLES.email && (
-        <a href={`mailto:${HANDLES.email}`} class="inline-flex items-center gap-2 text-grey hover:text-ink transition-colors">
-          <Icon name="mail" size={14} /> Get in touch
-        </a>
-      )}
-    </div>
-
-    <!-- subtle scroll cue -->
-    <div class="mt-24 text-grey">
-      <Icon name="chevronDown" size={20} class="animate-pulse" />
+    <!-- Scroll cue. Restrained. -->
+    <div class="mt-32 eyebrow flex items-center gap-3 text-smoke">
+      <span>Scroll</span>
+      <Icon name="chevronDown" size={14} class="animate-pulse" />
     </div>
   </section>
 
 
-  <!-- ╔═════════════════════════════════════════════ PROJECTS ════════════════════════════════════════════════╗ -->
-  <section id="projects" class="py-24 sm:py-32 border-t border-rule">
-    <header class="flex items-baseline justify-between gap-6 mb-14 flex-wrap">
-      <div>
-        <p class="eyebrow mb-3">
-          <Icon name="code" size={12} class="inline-block align-baseline mr-1.5" />
-          § 01 — Projects
-        </p>
-        <h2 class="font-display text-ink text-4xl sm:text-5xl tracking-tightest font-medium">
-          Things I've built<span class="text-blue">.</span>
+  <!-- ═══════════════════ § 01 — WORK ═══════════════════ -->
+  <section id="work" class="py-32 sm:py-40 border-t border-veil/30">
+
+    <header class="grid grid-cols-12 gap-x-4 items-end mb-16">
+      <div class="col-span-12 sm:col-span-8">
+        <p class="eyebrow mb-4">§ 01 — Work</p>
+        <h2 class="font-display text-ivory text-5xl sm:text-6xl tracking-tightest font-light leading-none">
+          What I build<span class="text-gold">.</span>
         </h2>
       </div>
-      <a
-        href={`https://github.com/${HANDLES.github}`}
-        target="_blank" rel="noopener"
-        class="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-grey hover:text-ink transition-colors"
-      >
-        All on GitHub <Icon name="arrowUpRight" size={14} />
-      </a>
+      <div class="col-span-12 sm:col-span-4 sm:text-right mt-6 sm:mt-0">
+        <a
+          href={`https://github.com/${HANDLES.github}`}
+          target="_blank" rel="noopener"
+          class="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-regal text-bone link"
+        >
+          Full archive <Icon name="arrowUpRight" size={12} />
+        </a>
+      </div>
     </header>
 
     {projects.length === 0 ? (
-      <p class="text-grey italic max-w-xl">
-        No projects yet — or the GitHub handle in
-        <code class="font-mono text-xs bg-wash px-1.5 py-0.5 mx-1">src/lib/config.js</code>
-        couldn't be reached.
+      <p class="text-smoke italic max-w-xl">
+        No projects available — GitHub couldn't be reached, or the handle in
+        <code class="font-mono text-xs bg-obsidian px-1.5 py-0.5 mx-1 text-bone">src/lib/config.js</code>
+        isn't set.
       </p>
     ) : (
-      <ul class="grid sm:grid-cols-2 gap-5">
-        {projects.map((p) => (
+      <ul class="space-y-px">
+        {projects.map((p, i) => (
           <li>
             <a
               href={p.url}
               target="_blank"
               rel="noopener"
-              class="card group block h-full p-7 border border-rule bg-bg"
+              class="card group block p-7 sm:p-10"
             >
-              <div class="flex items-start justify-between gap-4 mb-4">
-                <h3 class="font-display text-xl sm:text-2xl text-ink tracking-tighter font-medium group-hover:text-blue transition-colors">
-                  {p.name}
-                </h3>
-                <Icon name="arrowUpRight" size={18} class="text-grey group-hover:text-blue transition-colors flex-shrink-0 mt-1" />
-              </div>
+              <div class="grid grid-cols-12 gap-x-4 gap-y-3 items-baseline">
+                <!-- Index -->
+                <div class="col-span-2 sm:col-span-1 font-mono text-[10px] uppercase tracking-regal text-gold/70">
+                  {String(i + 1).padStart(2, '0')}
+                </div>
 
-              {p.description ? (
-                <p class="text-body text-[14.5px] leading-relaxed mb-5 min-h-[3rem]">
-                  {p.description}
-                </p>
-              ) : (
-                <p class="text-soft italic text-[14px] mb-5 min-h-[3rem]">
-                  No description yet — add one to this repo's README or GitHub description.
-                </p>
-              )}
+                <!-- Title + description -->
+                <div class="col-span-10 sm:col-span-8">
+                  <h3 class="font-display font-light text-3xl sm:text-4xl text-ivory tracking-tighter group-hover:text-gold transition-colors duration-500">
+                    {p.name}
+                  </h3>
 
-              <div class="flex items-center gap-4 flex-wrap font-mono text-[10px] uppercase tracking-[0.18em] text-grey">
-                {p.language && (
-                  <span class="inline-flex items-center gap-1.5">
-                    <span class="w-1.5 h-1.5 bg-blue rounded-full"></span>
-                    {p.language}
-                  </span>
-                )}
-                {p.stars > 0 && (
-                  <span class="inline-flex items-center gap-1">
-                    <Icon name="star" size={11} /> {p.stars}
-                  </span>
-                )}
-                <span>Updated {fmt(p.updated)}</span>
+                  {p.description ? (
+                    <p class="mt-3 text-bone text-[15px] leading-relaxed max-w-2xl">
+                      {p.description}
+                    </p>
+                  ) : (
+                    <p class="mt-3 text-smoke italic text-[14px] max-w-2xl">
+                      No description yet — add one to this repo's README or GitHub description field.
+                    </p>
+                  )}
+
+                  <!-- Metadata row -->
+                  <div class="mt-5 flex items-center gap-5 flex-wrap font-mono text-[10px] uppercase tracking-regal text-smoke">
+                    {p.language && (
+                      <span class="inline-flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
+                        {p.language}
+                      </span>
+                    )}
+                    {p.stars > 0 && (
+                      <span class="inline-flex items-center gap-1.5">
+                        <Icon name="star" size={10} /> {p.stars}
+                      </span>
+                    )}
+                    <span>{fmt(p.updated)}</span>
+                  </div>
+                </div>
+
+                <!-- Right column: badge + arrow -->
+                <div class="col-span-12 sm:col-span-3 sm:text-right flex sm:flex-col sm:items-end items-center gap-3 sm:gap-4 mt-2 sm:mt-0">
+                  {p.badge && (
+                    <span class="inline-block border border-gold/60 text-gold font-mono text-[10px] uppercase tracking-regal px-3 py-1.5">
+                      {p.badge}
+                    </span>
+                  )}
+                  <Icon name="arrowUpRight" size={20} class="text-smoke group-hover:text-gold transition-colors duration-500" />
+                </div>
               </div>
             </a>
           </li>
@@ -149,59 +146,60 @@ const taglineRest = taglineParts.slice(1).join('. ').trim();
   </section>
 
 
-  <!-- ╔══════════════════════════════════════════════ ESSAYS ═════════════════════════════════════════════════╗ -->
-  <section id="essays" class="py-24 sm:py-32 border-t border-rule">
-    <header class="flex items-baseline justify-between gap-6 mb-14 flex-wrap">
-      <div>
-        <p class="eyebrow mb-3">
-          <Icon name="feather" size={12} class="inline-block align-baseline mr-1.5" />
-          § 02 — Essays
-        </p>
-        <h2 class="font-display text-ink text-4xl sm:text-5xl tracking-tightest font-medium">
-          Things I've written<span class="text-blue">.</span>
+  <!-- ═══════════════════ § 02 — WRITING ═══════════════════ -->
+  <section id="writing" class="py-32 sm:py-40 border-t border-veil/30">
+
+    <header class="grid grid-cols-12 gap-x-4 items-end mb-16">
+      <div class="col-span-12 sm:col-span-8">
+        <p class="eyebrow mb-4">§ 02 — Writing</p>
+        <h2 class="font-display text-ivory text-5xl sm:text-6xl tracking-tightest font-light leading-none">
+          What I publish<span class="text-gold">.</span>
         </h2>
       </div>
-      <a
-        href={SUBSTACK_BASE}
-        target="_blank" rel="noopener"
-        class="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-grey hover:text-ink transition-colors"
-      >
-        Read on Substack <Icon name="arrowUpRight" size={14} />
-      </a>
+      <div class="col-span-12 sm:col-span-4 sm:text-right mt-6 sm:mt-0">
+        <div class="flex sm:justify-end gap-5 font-mono text-[10px] uppercase tracking-regal text-bone">
+          <a href={SUBSTACK_BASE} target="_blank" rel="noopener" class="link">Substack</a>
+          <a href={MEDIUM_BASE} target="_blank" rel="noopener" class="link">Medium</a>
+        </div>
+      </div>
     </header>
 
     {essays.length === 0 ? (
-      <p class="text-grey italic max-w-xl">
-        No essays yet — or the Substack handle in
-        <code class="font-mono text-xs bg-wash px-1.5 py-0.5 mx-1">src/lib/config.js</code>
-        isn't set.
+      <p class="text-smoke italic max-w-xl">
+        No essays yet — or the handles in
+        <code class="font-mono text-xs bg-obsidian px-1.5 py-0.5 mx-1 text-bone">src/lib/config.js</code>
+        aren't set.
       </p>
     ) : (
-      <ul class="divide-y divide-rule">
+      <ul class="divide-y divide-veil/30 border-y border-veil/30">
         {essays.map((essay, i) => (
           <li>
             <a
               href={essay.url}
               target="_blank"
               rel="noopener"
-              class="group block py-8 grid grid-cols-12 gap-x-4 items-baseline hover:bg-wash transition-colors px-3 -mx-3 rounded-sm"
+              class="group block py-10 px-4 -mx-4 grid grid-cols-12 gap-x-4 items-baseline transition-colors duration-500 hover:bg-obsidian/60"
             >
-              <span class="col-span-2 sm:col-span-1 font-mono text-[10px] uppercase tracking-[0.2em] text-grey">
+              <span class="col-span-2 sm:col-span-1 font-mono text-[10px] uppercase tracking-regal text-gold/70">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <div class="col-span-10 sm:col-span-8">
-                <h3 class="font-display text-2xl sm:text-3xl text-ink tracking-tighter font-medium leading-snug group-hover:text-blue transition-colors">
+                <div class="flex items-baseline gap-3 mb-3">
+                  <span class="font-mono text-[9px] uppercase tracking-regal text-gold/80 border border-gold/40 px-2 py-0.5">
+                    {essay.source}
+                  </span>
+                </div>
+                <h3 class="font-display font-light text-3xl sm:text-4xl text-ivory tracking-tighter leading-tight group-hover:text-gold transition-colors duration-500">
                   {essay.title}
                 </h3>
                 {essay.subtitle && (
-                  <p class="mt-2 font-sans italic text-grey text-[15px] leading-relaxed max-w-2xl">
+                  <p class="mt-3 font-display italic text-bone text-[16px] leading-snug max-w-2xl">
                     {essay.subtitle}
                   </p>
                 )}
               </div>
-              <div class="hidden sm:block col-span-3 text-right font-mono text-[10px] uppercase tracking-[0.18em] text-grey">
-                <div>{fmt(essay.date)}</div>
-                <div class="mt-1">{essay.readingTime} min</div>
+              <div class="hidden sm:block col-span-3 text-right font-mono text-[10px] uppercase tracking-regal text-smoke">
+                {fmt(essay.date)}
               </div>
             </a>
           </li>
@@ -211,41 +209,34 @@ const taglineRest = taglineParts.slice(1).join('. ').trim();
   </section>
 
 
-  <!-- ╔══════════════════════════════════════════════ FOOTER ═════════════════════════════════════════════════╗ -->
-  <footer id="contact" class="py-20 border-t border-rule">
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer id="contact" class="py-24 border-t border-veil/30">
     <div class="grid grid-cols-12 gap-6 items-end">
-      <div class="col-span-12 sm:col-span-6">
-        <p class="eyebrow mb-3">Contact</p>
-        <p class="font-display text-3xl sm:text-4xl text-ink tracking-tightest font-medium leading-tight">
-          Let's talk<span class="text-blue">.</span>
+      <div class="col-span-12 sm:col-span-7">
+        <p class="eyebrow mb-4">Contact</p>
+        <p class="font-display text-ivory text-4xl sm:text-5xl tracking-tightest font-light leading-tight">
+          Speak<span class="text-gold">.</span>
         </p>
-        {HANDLES.email && (
-          <a href={`mailto:${HANDLES.email}`} class="mt-4 inline-block font-sans text-lg text-body link">
-            {HANDLES.email}
-          </a>
-        )}
       </div>
 
-      <div class="col-span-12 sm:col-span-6 sm:justify-self-end">
+      <div class="col-span-12 sm:col-span-5 sm:justify-self-end">
         <ul class="flex items-center gap-4">
-          {HANDLES.email && (
-            <li>
-              <a
-                href={`mailto:${HANDLES.email}`}
-                aria-label="Email"
-                class="inline-flex items-center justify-center w-11 h-11 border border-rule rounded-full text-grey hover:text-blue hover:border-blue transition-colors"
-              >
-                <Icon name="mail" size={18} />
-              </a>
-            </li>
-          )}
+          <li>
+            <a
+              href={`mailto:${HANDLES.email}`}
+              aria-label="Email"
+              class="icon-btn"
+            >
+              <Icon name="mail" size={18} />
+            </a>
+          </li>
           {HANDLES.linkedin && (
             <li>
               <a
                 href={`https://linkedin.com/in/${HANDLES.linkedin}`}
                 target="_blank" rel="noopener"
                 aria-label="LinkedIn"
-                class="inline-flex items-center justify-center w-11 h-11 border border-rule rounded-full text-grey hover:text-blue hover:border-blue transition-colors"
+                class="icon-btn"
               >
                 <Icon name="linkedin" size={18} />
               </a>
@@ -256,7 +247,7 @@ const taglineRest = taglineParts.slice(1).join('. ').trim();
               href={`https://github.com/${HANDLES.github}`}
               target="_blank" rel="noopener"
               aria-label="GitHub"
-              class="inline-flex items-center justify-center w-11 h-11 border border-rule rounded-full text-grey hover:text-blue hover:border-blue transition-colors"
+              class="icon-btn"
             >
               <Icon name="github" size={18} />
             </a>
@@ -265,9 +256,10 @@ const taglineRest = taglineParts.slice(1).join('. ').trim();
       </div>
     </div>
 
-    <div class="mt-16 pt-6 border-t border-rule flex items-center justify-between gap-4 flex-wrap font-mono text-[10px] uppercase tracking-[0.18em] text-grey">
-      <span>© {new Date().getFullYear()} {SITE.name}. All rights reserved.</span>
-      <a href="#top" class="hover:text-ink transition-colors">Back to top ↑</a>
+    <!-- Hairline rule + copyright -->
+    <div class="mt-16 pt-8 border-t border-veil/30 flex items-center justify-between gap-4 flex-wrap font-mono text-[10px] uppercase tracking-regal text-smoke">
+      <span>© {new Date().getFullYear()} {SITE.name}</span>
+      <a href="#top" class="hover:text-gold transition-colors duration-500">↑ Top</a>
     </div>
   </footer>
 

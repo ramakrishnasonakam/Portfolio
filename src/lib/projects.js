@@ -1,4 +1,10 @@
-import { GITHUB_REPOS_API, githubReadmeApi, HANDLES, PROJECTS_LIMIT } from './config.js';
+import {
+  GITHUB_REPOS_API,
+  githubReadmeApi,
+  HANDLES,
+  PROJECTS_LIMIT,
+  PROJECT_BADGES,
+} from './config.js';
 
 const GH_HEADERS = {
   Accept: 'application/vnd.github+json',
@@ -14,7 +20,6 @@ export async function getProjects() {
     }
     const repos = await res.json();
 
-    // Filter, sort, then cap BEFORE fetching READMEs (so we don't waste API calls).
     const top = repos
       .filter((r) => !r.fork && !r.archived && !r.private)
       .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
@@ -30,8 +35,8 @@ export async function getProjects() {
           language: r.language,
           stars: r.stargazers_count,
           updated: r.updated_at,
-          topics: r.topics || [],
           description: readme || r.description || '',
+          badge: PROJECT_BADGES[r.name] || null,
         };
       })
     );
@@ -91,8 +96,8 @@ function extractFirstParagraph(md) {
     .replace(/\s+/g, ' ')
     .trim();
 
-  if (text.length > 240) {
-    text = text.slice(0, 237).replace(/\s+\S*$/, '') + '…';
+  if (text.length > 200) {
+    text = text.slice(0, 197).replace(/\s+\S*$/, '') + '…';
   }
 
   return text || null;

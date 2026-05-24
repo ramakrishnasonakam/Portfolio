@@ -1,6 +1,4 @@
 ---
-// Inlined Lucide icons. Pass `name` and optional `class`.
-// Source: https://lucide.dev (ISC licensed)
 const { name, class: className = '', size = 20 } = Astro.props;
 
 const ICONS = {
@@ -12,7 +10,6 @@ const ICONS = {
   chevronDown: `<path d="m6 9 6 6 6-6"/>`,
   feather: `<path d="M12.67 19a2 2 0 0 0 1.416-.586l6.154-6.172a6 6 0 0 0-8.49-8.486L5.61 9.9a2 2 0 0 0-.586 1.414V19a1 1 0 0 0 1 1z"/><path d="M16 8 2 22"/><path d="M17.5 15H9"/>`,
   code: `<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>`,
-  spark: `<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>`,
 };
 
 const path = ICONS[name] || '';
@@ -24,7 +21,7 @@ const path = ICONS[name] || '';
   viewBox="0 0 24 24"
   fill="none"
   stroke="currentColor"
-  stroke-width="1.75"
+  stroke-width="1.5"
   stroke-linecap="round"
   stroke-linejoin="round"
   class={className}
