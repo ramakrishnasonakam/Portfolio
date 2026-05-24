@@ -10,7 +10,7 @@
 
 // ─── 1. IDENTITY ────────────────────────────────────────────────
 export const SITE = {
-  name: 'YOUR FULL NAME',
+  name: 'Ramakrishna Sonakam',
 
   // Four words. No verbs. No connectors. Just the identities.
   // These appear under your name in the hero.
@@ -21,15 +21,15 @@ export const SITE = {
 // ─── 2. HANDLES ─────────────────────────────────────────────────
 export const HANDLES = {
   // Substack: part before .substack.com  (or set substackUrl below)
-  substack: 'YOUR_SUBSTACK',
+  substack: 'rksignal',
   substackUrl: null,
 
   // Medium: handle WITH the @ — e.g. '@rsonakam'
   medium: '@rsonakam',
 
   github: 'ramakrishnasonakam',
-  email: 'you@example.com',
-  linkedin: '',  // handle only, e.g. 'yourname'
+  email: 'rsonakam@gmail.com',
+  linkedin: 'ramakrishna-sonakam',  // handle only, e.g. 'yourname'
 };
 
 
