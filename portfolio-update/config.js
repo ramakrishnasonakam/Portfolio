@@ -10,7 +10,7 @@
 
 // ─── 1. IDENTITY ────────────────────────────────────────────────
 export const SITE = {
-  name: 'Ramakrishna Sonakam',
+  name: 'YOUR FULL NAME',
 
   // Four words. No verbs. No connectors. Just the identities.
   // These appear under your name in the hero.
@@ -21,15 +21,15 @@ export const SITE = {
 // ─── 2. HANDLES ─────────────────────────────────────────────────
 export const HANDLES = {
   // Substack: part before .substack.com  (or set substackUrl below)
-  substack: 'rksignal',
+  substack: 'YOUR_SUBSTACK',
   substackUrl: null,
 
   // Medium: handle WITH the @ — e.g. '@rsonakam'
   medium: '@rsonakam',
 
   github: 'ramakrishnasonakam',
-  email: 'rsonakam@gmail.com',
-  linkedin: 'ramakrishna-sonakam',  // handle only, e.g. 'yourname'
+  email: 'you@example.com',
+  linkedin: '',  // handle only, e.g. 'yourname'
 };
 
 
@@ -57,13 +57,6 @@ export const PROJECT_BADGES = {
 //
 // If left empty, falls back to most-recently-updated public repos.
 export const FEATURED_PROJECTS = [
-  'Mumbai-Pulse-Dashboard',
-  'Market-Research-EVs-In-Washington-USA',
-  'Spotify-Songs-Similarity-Matching',
-  'team9capstone',
-  'Codewars-kata',
-  'DSAPython',
-  'DSA'
   // 'headliner-repo',
   // 'supporting-repo-1',
   // 'supporting-repo-2',
