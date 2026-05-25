@@ -8,6 +8,32 @@ import { getProjects } from '../lib/projects.js';
 const essays = await getEssays();
 const projects = await getProjects();
 
+// Per-language color (matches GitHub's official palette for common langs)
+const LANG_COLORS = {
+  Python: '#3572A5', JavaScript: '#f1e05a', TypeScript: '#3178c6',
+  Jupyter: '#DA5B0B', 'Jupyter Notebook': '#DA5B0B',
+  R: '#198CE7', Go: '#00ADD8', Rust: '#dea584',
+  HTML: '#e34c26', CSS: '#563d7c', Shell: '#89e051',
+  Java: '#b07219', 'C++': '#f34b7d', C: '#555555',
+  Ruby: '#701516', PHP: '#4F5D95', Swift: '#F05138',
+  Kotlin: '#A97BFF', Dart: '#00B4AB', Vue: '#41b883',
+  Svelte: '#ff3e00', Astro: '#ff5d01', Lua: '#000080',
+  SCSS: '#c6538c', Dockerfile: '#384d54',
+};
+
+function langSegments(languages) {
+  const entries = Object.entries(languages || {});
+  if (entries.length === 0) return [];
+  const total = entries.reduce((acc, [, v]) => acc + v, 0);
+  return entries
+    .map(([name, bytes]) => ({
+      name,
+      pct: (bytes / total) * 100,
+      color: LANG_COLORS[name] || '#6E6E72',
+    }))
+    .sort((a, b) => b.pct - a.pct);
+}
+
 function fmt(d) {
   if (!d) return '';
   return new Date(d).toLocaleDateString('en-US', {
@@ -20,19 +46,15 @@ function fmt(d) {
 
   <!-- ═══════════════════ HERO ═══════════════════ -->
   <section class="min-h-[92vh] flex flex-col justify-center py-32 rise">
-
-    <!-- Tiny eyebrow — coordinates, no greeting -->
     <div class="eyebrow flex items-center gap-3 mb-12">
       <span class="inline-block w-10 h-px bg-gold/60"></span>
       <span>MMXXVI / Portfolio</span>
     </div>
 
-    <!-- Name. Massive. Display serif. Italic accent letter. -->
     <h1 class="font-display text-ivory leading-[0.95] tracking-tightest font-light text-[clamp(3.5rem,11vw,9rem)] max-w-6xl">
       {SITE.name}
     </h1>
 
-    <!-- Roles. The whole bio. -->
     <div class="mt-12 max-w-3xl">
       <ul class="flex flex-wrap items-center gap-x-6 gap-y-3 font-display italic text-bone text-[clamp(1.5rem,3vw,2.25rem)] font-light">
         {SITE.roles.map((role, i) => (
@@ -44,7 +66,6 @@ function fmt(d) {
       </ul>
     </div>
 
-    <!-- Scroll cue. Restrained. -->
     <div class="mt-32 eyebrow flex items-center gap-3 text-smoke">
       <span>Scroll</span>
       <Icon name="chevronDown" size={14} class="animate-pulse" />
@@ -54,8 +75,7 @@ function fmt(d) {
 
   <!-- ═══════════════════ § 01 — WORK ═══════════════════ -->
   <section id="work" class="py-32 sm:py-40 border-t border-veil/30">
-
-    <header class="grid grid-cols-12 gap-x-4 items-end mb-16">
+    <header class="grid grid-cols-12 gap-x-4 items-end mb-20">
       <div class="col-span-12 sm:col-span-8">
         <p class="eyebrow mb-4">§ 01 — Work</p>
         <h2 class="font-display text-ivory text-5xl sm:text-6xl tracking-tightest font-light leading-none">
@@ -75,81 +95,110 @@ function fmt(d) {
 
     {projects.length === 0 ? (
       <p class="text-smoke italic max-w-xl">
-        No projects available — GitHub couldn't be reached, or the handle in
+        No projects available. GitHub couldn't be reached, or the handle in
         <code class="font-mono text-xs bg-obsidian px-1.5 py-0.5 mx-1 text-bone">src/lib/config.js</code>
         isn't set.
       </p>
     ) : (
       <ul class="space-y-px">
-        {projects.map((p, i) => (
-          <li>
-            <a
-              href={p.url}
-              target="_blank"
-              rel="noopener"
-              class="card group block p-7 sm:p-10"
-            >
-              <div class="grid grid-cols-12 gap-x-4 gap-y-3 items-baseline">
-                <!-- Index -->
-                <div class="col-span-2 sm:col-span-1 font-mono text-[10px] uppercase tracking-regal text-gold/70">
-                  {String(i + 1).padStart(2, '0')}
-                </div>
+        {projects.map((p, i) => {
+          const segments = langSegments(p.languages);
+          return (
+            <li>
+              <a
+                href={p.url}
+                target="_blank"
+                rel="noopener"
+                class="card group block p-8 sm:p-12 lg:p-14"
+              >
+                <div class="grid grid-cols-12 gap-x-6 gap-y-8 items-start">
 
-                <!-- Title + description -->
-                <div class="col-span-10 sm:col-span-8">
-                  <h3 class="font-display font-light text-3xl sm:text-4xl text-ivory tracking-tighter group-hover:text-gold transition-colors duration-500">
-                    {p.name}
-                  </h3>
-
-                  {p.description ? (
-                    <p class="mt-3 text-bone text-[15px] leading-relaxed max-w-2xl">
-                      {p.description}
-                    </p>
-                  ) : (
-                    <p class="mt-3 text-smoke italic text-[14px] max-w-2xl">
-                      No description yet — add one to this repo's README or GitHub description field.
-                    </p>
-                  )}
-
-                  <!-- Metadata row -->
-                  <div class="mt-5 flex items-center gap-5 flex-wrap font-mono text-[10px] uppercase tracking-regal text-smoke">
-                    {p.language && (
-                      <span class="inline-flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
-                        {p.language}
+                  <!-- ── LEFT: index + name + hook + badge ── -->
+                  <div class="col-span-12 lg:col-span-8">
+                    <div class="flex items-baseline gap-4 mb-6">
+                      <span class="font-mono text-[10px] uppercase tracking-regal text-gold/70">
+                        {String(i + 1).padStart(2, '0')}
                       </span>
+                      {p.badge && (
+                        <span class="inline-block border border-gold/60 text-gold font-mono text-[10px] uppercase tracking-regal px-3 py-1">
+                          {p.badge}
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 class="font-display font-light text-4xl sm:text-5xl lg:text-6xl text-ivory tracking-tighter leading-[1.05] group-hover:text-gold transition-colors duration-500">
+                      {p.name}
+                    </h3>
+
+                    {p.description ? (
+                      <p class="mt-6 text-bone text-[16px] sm:text-[17px] leading-relaxed max-w-2xl">
+                        {p.description}
+                      </p>
+                    ) : (
+                      <p class="mt-6 text-smoke italic text-[14px] max-w-2xl">
+                        No description on this repo's README yet.
+                      </p>
                     )}
-                    {p.stars > 0 && (
-                      <span class="inline-flex items-center gap-1.5">
-                        <Icon name="star" size={10} /> {p.stars}
-                      </span>
-                    )}
-                    <span>{fmt(p.updated)}</span>
                   </div>
-                </div>
 
-                <!-- Right column: badge + arrow -->
-                <div class="col-span-12 sm:col-span-3 sm:text-right flex sm:flex-col sm:items-end items-center gap-3 sm:gap-4 mt-2 sm:mt-0">
-                  {p.badge && (
-                    <span class="inline-block border border-gold/60 text-gold font-mono text-[10px] uppercase tracking-regal px-3 py-1.5">
-                      {p.badge}
-                    </span>
-                  )}
-                  <Icon name="arrowUpRight" size={20} class="text-smoke group-hover:text-gold transition-colors duration-500" />
+                  <!-- ── RIGHT: signals (languages, meta, arrow) ── -->
+                  <div class="col-span-12 lg:col-span-4 lg:pl-8 lg:border-l lg:border-veil/30 flex flex-col gap-7">
+
+                    <!-- Language bar -->
+                    {segments.length > 0 && (
+                      <div>
+                        <p class="font-mono text-[9px] uppercase tracking-regal text-smoke mb-3">
+                          Composition
+                        </p>
+                        <div class="flex h-1 w-full overflow-hidden">
+                          {segments.map((s) => (
+                            <span
+                              style={`width:${s.pct}%; background:${s.color}`}
+                              title={`${s.name} ${s.pct.toFixed(1)}%`}
+                            ></span>
+                          ))}
+                        </div>
+                        <ul class="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-[0.18em] text-bone">
+                          {segments.slice(0, 4).map((s) => (
+                            <li class="inline-flex items-center gap-1.5">
+                              <span class="w-1.5 h-1.5 rounded-full" style={`background:${s.color}`}></span>
+                              {s.name} <span class="text-smoke">· {s.pct.toFixed(0)}%</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <!-- Meta -->
+                    <div class="font-mono text-[10px] uppercase tracking-regal text-smoke space-y-1.5">
+                      {p.stars > 0 && (
+                        <div class="inline-flex items-center gap-2">
+                          <Icon name="star" size={10} /> {p.stars} stars
+                        </div>
+                      )}
+                      <div>Updated {fmt(p.updated)}</div>
+                    </div>
+
+                    <!-- Arrow CTA -->
+                    <div class="mt-auto flex items-center gap-2 font-mono text-[10px] uppercase tracking-regal text-bone group-hover:text-gold transition-colors duration-500">
+                      <span>View on GitHub</span>
+                      <Icon name="arrowUpRight" size={14} />
+                    </div>
+                  </div>
+
                 </div>
-              </div>
-            </a>
-          </li>
-        ))}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     )}
   </section>
 
 
-  <!-- ═══════════════════ § 02 — WRITING ═══════════════════ -->
+  <!-- ═══════════════════ § 02 — WRITING (carousel) ═══════════════════ -->
   <section id="writing" class="py-32 sm:py-40 border-t border-veil/30">
-
-    <header class="grid grid-cols-12 gap-x-4 items-end mb-16">
+    <header class="grid grid-cols-12 gap-x-4 items-end mb-20">
       <div class="col-span-12 sm:col-span-8">
         <p class="eyebrow mb-4">§ 02 — Writing</p>
         <h2 class="font-display text-ivory text-5xl sm:text-6xl tracking-tightest font-light leading-none">
@@ -166,45 +215,96 @@ function fmt(d) {
 
     {essays.length === 0 ? (
       <p class="text-smoke italic max-w-xl">
-        No essays yet — or the handles in
+        No essays yet, or the Substack/Medium handles in
         <code class="font-mono text-xs bg-obsidian px-1.5 py-0.5 mx-1 text-bone">src/lib/config.js</code>
         aren't set.
       </p>
     ) : (
-      <ul class="divide-y divide-veil/30 border-y border-veil/30">
-        {essays.map((essay, i) => (
-          <li>
-            <a
-              href={essay.url}
-              target="_blank"
-              rel="noopener"
-              class="group block py-10 px-4 -mx-4 grid grid-cols-12 gap-x-4 items-baseline transition-colors duration-500 hover:bg-obsidian/60"
+      <div
+        class="carousel relative border-y border-veil/30"
+        data-total={essays.length}
+        tabindex="0"
+        aria-roledescription="carousel"
+        aria-label="Essays"
+      >
+        <!-- Slides -->
+        <ul class="carousel-track relative min-h-[28rem] sm:min-h-[32rem]">
+          {essays.map((essay, i) => (
+            <li
+              class="carousel-slide absolute inset-0 px-2 sm:px-10 py-16 flex flex-col justify-center transition-opacity duration-700"
+              data-index={i}
+              aria-hidden={i === 0 ? 'false' : 'true'}
+              style={`opacity:${i === 0 ? 1 : 0}; pointer-events:${i === 0 ? 'auto' : 'none'};`}
             >
-              <span class="col-span-2 sm:col-span-1 font-mono text-[10px] uppercase tracking-regal text-gold/70">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <div class="col-span-10 sm:col-span-8">
-                <div class="flex items-baseline gap-3 mb-3">
-                  <span class="font-mono text-[9px] uppercase tracking-regal text-gold/80 border border-gold/40 px-2 py-0.5">
-                    {essay.source}
-                  </span>
-                </div>
-                <h3 class="font-display font-light text-3xl sm:text-4xl text-ivory tracking-tighter leading-tight group-hover:text-gold transition-colors duration-500">
+              <div class="flex items-baseline gap-4 mb-8">
+                <span class="font-mono text-[10px] uppercase tracking-regal text-gold/70">
+                  {String(i + 1).padStart(2, '0')} / {String(essays.length).padStart(2, '0')}
+                </span>
+                <span class="font-mono text-[9px] uppercase tracking-regal text-gold border border-gold/40 px-2 py-0.5">
+                  {essay.source}
+                </span>
+                <span class="font-mono text-[10px] uppercase tracking-regal text-smoke">
+                  {fmt(essay.date)}
+                </span>
+              </div>
+
+              <a
+                href={essay.url}
+                target="_blank"
+                rel="noopener"
+                class="group block max-w-4xl"
+              >
+                <h3 class="font-display font-light text-ivory tracking-tighter leading-[1.05] text-[clamp(2rem,5vw,4rem)] group-hover:text-gold transition-colors duration-500">
                   {essay.title}
                 </h3>
+
                 {essay.subtitle && (
-                  <p class="mt-3 font-display italic text-bone text-[16px] leading-snug max-w-2xl">
+                  <p class="mt-6 font-display italic text-bone text-xl sm:text-2xl leading-snug max-w-3xl">
                     {essay.subtitle}
                   </p>
                 )}
-              </div>
-              <div class="hidden sm:block col-span-3 text-right font-mono text-[10px] uppercase tracking-regal text-smoke">
-                {fmt(essay.date)}
-              </div>
-            </a>
-          </li>
-        ))}
-      </ul>
+
+                <div class="mt-10 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-regal text-bone group-hover:text-gold transition-colors duration-500">
+                  Read in full <Icon name="arrowUpRight" size={14} />
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <!-- Controls -->
+        <div class="flex items-center justify-between px-4 sm:px-10 py-6 border-t border-veil/30">
+          <button
+            type="button"
+            class="carousel-prev font-mono text-[10px] uppercase tracking-regal text-bone hover:text-gold transition-colors duration-500 disabled:text-smoke/50"
+            aria-label="Previous essay"
+          >
+            ← Prev
+          </button>
+
+          <!-- Indicator dots -->
+          <ul class="carousel-dots flex items-center gap-2">
+            {essays.map((_, i) => (
+              <li>
+                <button
+                  type="button"
+                  class={`carousel-dot w-2 h-2 rounded-full border border-gold/50 ${i === 0 ? 'bg-gold' : 'bg-transparent'} transition-colors duration-300`}
+                  data-target={i}
+                  aria-label={`Go to essay ${i + 1}`}
+                ></button>
+              </li>
+            ))}
+          </ul>
+
+          <button
+            type="button"
+            class="carousel-next font-mono text-[10px] uppercase tracking-regal text-bone hover:text-gold transition-colors duration-500 disabled:text-smoke/50"
+            aria-label="Next essay"
+          >
+            Next →
+          </button>
+        </div>
+      </div>
     )}
   </section>
 
@@ -215,7 +315,7 @@ function fmt(d) {
       <div class="col-span-12 sm:col-span-7">
         <p class="eyebrow mb-4">Contact</p>
         <p class="font-display text-ivory text-4xl sm:text-5xl tracking-tightest font-light leading-tight">
-          Speak<span class="text-gold">.</span>
+          Reach out<span class="text-gold">.</span>
         </p>
       </div>
 
@@ -256,11 +356,60 @@ function fmt(d) {
       </div>
     </div>
 
-    <!-- Hairline rule + copyright -->
     <div class="mt-16 pt-8 border-t border-veil/30 flex items-center justify-between gap-4 flex-wrap font-mono text-[10px] uppercase tracking-regal text-smoke">
       <span>© {new Date().getFullYear()} {SITE.name}</span>
       <a href="#top" class="hover:text-gold transition-colors duration-500">↑ Top</a>
     </div>
   </footer>
+
+
+  <!-- ─── Carousel script (vanilla, no dependency) ─── -->
+  <script is:inline>
+    (function () {
+      const carousel = document.querySelector('.carousel');
+      if (!carousel) return;
+
+      const slides = Array.from(carousel.querySelectorAll('.carousel-slide'));
+      const dots = Array.from(carousel.querySelectorAll('.carousel-dot'));
+      const prev = carousel.querySelector('.carousel-prev');
+      const next = carousel.querySelector('.carousel-next');
+      const total = slides.length;
+      let current = 0;
+
+      function show(i) {
+        current = (i + total) % total;
+        slides.forEach((s, idx) => {
+          const active = idx === current;
+          s.style.opacity = active ? '1' : '0';
+          s.style.pointerEvents = active ? 'auto' : 'none';
+          s.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+        dots.forEach((d, idx) => {
+          d.classList.toggle('bg-gold', idx === current);
+          d.classList.toggle('bg-transparent', idx !== current);
+        });
+      }
+
+      prev?.addEventListener('click', () => show(current - 1));
+      next?.addEventListener('click', () => show(current + 1));
+      dots.forEach((d) =>
+        d.addEventListener('click', () => show(Number(d.dataset.target)))
+      );
+
+      // Keyboard navigation when carousel is focused
+      carousel.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); show(current - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); show(current + 1); }
+      });
+
+      // Touch/swipe (mobile)
+      let startX = 0;
+      carousel.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+      carousel.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+      });
+    })();
+  </script>
 
 </Base>

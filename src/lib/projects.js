@@ -27,7 +27,10 @@ export async function getProjects() {
 
     const enriched = await Promise.all(
       top.map(async (r) => {
-        const readme = await fetchReadmeExcerpt(r.name);
+        const [readme, languages] = await Promise.all([
+          fetchReadmeExcerpt(r.name),
+          fetchLanguages(r.name),
+        ]);
         return {
           name: r.name,
           url: r.html_url,
@@ -37,6 +40,7 @@ export async function getProjects() {
           updated: r.updated_at,
           description: readme || r.description || '',
           badge: PROJECT_BADGES[r.name] || null,
+          languages, // { Python: 12345, JavaScript: 5678 } bytes per lang
         };
       })
     );
@@ -45,6 +49,17 @@ export async function getProjects() {
   } catch (err) {
     console.warn('[projects] could not fetch GitHub repos:', err.message);
     return [];
+  }
+}
+
+async function fetchLanguages(repoName) {
+  try {
+    const url = `https://api.github.com/repos/${HANDLES.github}/${repoName}/languages`;
+    const res = await fetch(url, { headers: GH_HEADERS });
+    if (!res.ok) return {};
+    return await res.json();
+  } catch {
+    return {};
   }
 }
 
@@ -96,8 +111,8 @@ function extractFirstParagraph(md) {
     .replace(/\s+/g, ' ')
     .trim();
 
-  if (text.length > 200) {
-    text = text.slice(0, 197).replace(/\s+\S*$/, '') + '…';
+  if (text.length > 220) {
+    text = text.slice(0, 217).replace(/\s+\S*$/, '') + '…';
   }
 
   return text || null;
