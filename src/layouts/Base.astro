@@ -4,7 +4,11 @@ import { SITE } from '../lib/config.js';
 
 const { title, description } = Astro.props;
 const pageTitle = title ? `${title} — ${SITE.name}` : SITE.name;
-const pageDesc = description || SITE.roles.join(' · ');
+const pageDesc = description || SITE.roles?.join(' · ') || SITE.name;
+
+const siteOrigin = Astro.site?.toString().replace(/\/$/, '') || '';
+const ogImage = `${siteOrigin}/og.svg`;
+const canonical = `${siteOrigin}${Astro.url.pathname}`;
 ---
 <!doctype html>
 <html lang="en">
@@ -12,22 +16,40 @@ const pageDesc = description || SITE.roles.join(' · ');
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+
+    <title>{pageTitle}</title>
     <meta name="description" content={pageDesc} />
+    <meta name="author" content={SITE.name} />
+    <meta name="theme-color" content="#000000" />
+
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDesc} />
     <meta property="og:type" content="website" />
-    <meta name="theme-color" content="#000000" />
-    <title>{pageTitle}</title>
+    <meta property="og:url" content={canonical} />
+    {siteOrigin && <meta property="og:image" content={ogImage} />}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDesc} />
+    {siteOrigin && <meta name="twitter:image" content={ogImage} />}
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": SITE.name,
+      "url": siteOrigin,
+      "description": pageDesc,
+    })} />
   </head>
   <body class="vignette">
 
-    <!-- Sticky nav: minimal, monogram + 3 anchors + resume action -->
     <nav class="sticky top-0 z-40 bg-void/70 backdrop-blur-sm border-b border-veil/30">
-      <div class="mx-auto max-w-[1200px] px-6 sm:px-10 lg:px-16 py-5 flex items-center justify-between gap-6">
-        <a href="#top" class="font-display text-gold text-lg tracking-tighter font-medium italic">
+      <div class="mx-auto max-w-[1200px] px-4 sm:px-10 lg:px-16 py-4 sm:py-5 flex items-center justify-between gap-4">
+        <a href="#top" class="font-display text-gold text-base sm:text-lg tracking-tighter font-medium italic shrink-0">
           {SITE.name.split(' ').map((w) => w[0]).join('')}
         </a>
-        <ul class="flex items-center gap-5 sm:gap-8 font-mono text-[10px] uppercase tracking-regal text-bone">
+        <ul class="flex items-center gap-3 sm:gap-8 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-regal text-bone">
           <li><a href="#work" class="hover:text-gold transition-colors duration-500">Work</a></li>
           <li><a href="#writing" class="hover:text-gold transition-colors duration-500">Writing</a></li>
           <li><a href="#contact" class="hover:text-gold transition-colors duration-500">Contact</a></li>
@@ -36,7 +58,7 @@ const pageDesc = description || SITE.roles.join(' · ');
               href="/resume.pdf"
               target="_blank"
               rel="noopener"
-              class="inline-block border border-gold/60 text-gold px-3 py-1.5 hover:bg-gold hover:text-void transition-all duration-500"
+              class="inline-block border border-gold/60 text-gold px-2 py-1 sm:px-3 sm:py-1.5 hover:bg-gold hover:text-void transition-all duration-500"
             >
               Resume
             </a>
@@ -45,7 +67,7 @@ const pageDesc = description || SITE.roles.join(' · ');
       </div>
     </nav>
 
-    <div class="mx-auto max-w-[1200px] px-6 sm:px-10 lg:px-16">
+    <div class="mx-auto max-w-[1200px] px-4 sm:px-10 lg:px-16">
       <slot />
     </div>
   </body>

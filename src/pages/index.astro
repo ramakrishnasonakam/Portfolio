@@ -8,7 +8,6 @@ import { getProjects } from '../lib/projects.js';
 const essays = await getEssays();
 const projects = await getProjects();
 
-// Per-language color (matches GitHub's official palette for common langs)
 const LANG_COLORS = {
   Python: '#3572A5', JavaScript: '#f1e05a', TypeScript: '#3178c6',
   Jupyter: '#DA5B0B', 'Jupyter Notebook': '#DA5B0B',
@@ -45,28 +44,17 @@ function fmt(d) {
   <span id="top"></span>
 
   <!-- ═══════════════════ HERO ═══════════════════ -->
-  <section class="min-h-[92vh] flex flex-col justify-center py-32 rise">
-    <div class="eyebrow flex items-center gap-3 mb-12">
-      <span class="inline-block w-10 h-px bg-gold/60"></span>
+  <section class="min-h-[90vh] flex flex-col justify-center py-20 sm:py-32 rise">
+    <div class="eyebrow flex items-center gap-3 mb-8 sm:mb-12">
+      <span class="inline-block w-8 sm:w-10 h-px bg-gold/60"></span>
       <span>MMXXVI / Portfolio</span>
     </div>
 
-    <h1 class="font-display text-ivory leading-[0.95] tracking-tightest font-light text-[clamp(3.5rem,11vw,9rem)] max-w-6xl">
+    <h1 class="font-display text-ivory leading-[0.95] tracking-tightest font-light text-[clamp(2.5rem,11vw,9rem)] max-w-6xl">
       {SITE.name}
     </h1>
 
-    <div class="mt-12 max-w-3xl">
-      <ul class="flex flex-wrap items-center gap-x-6 gap-y-3 font-display italic text-bone text-[clamp(1.5rem,3vw,2.25rem)] font-light">
-        {SITE.roles.map((role, i) => (
-          <>
-            {i > 0 && <li class="text-gold/60 font-sans not-italic text-sm">◆</li>}
-            <li class={i === 0 || i === 3 ? 'text-ivory' : 'text-bone'}>{role}</li>
-          </>
-        ))}
-      </ul>
-    </div>
-
-    <div class="mt-32 eyebrow flex items-center gap-3 text-smoke">
+    <div class="mt-16 sm:mt-24 eyebrow flex items-center gap-3 text-smoke">
       <span>Scroll</span>
       <Icon name="chevronDown" size={14} class="animate-pulse" />
     </div>
@@ -74,15 +62,15 @@ function fmt(d) {
 
 
   <!-- ═══════════════════ § 01 — WORK ═══════════════════ -->
-  <section id="work" class="py-32 sm:py-40 border-t border-veil/30">
-    <header class="grid grid-cols-12 gap-x-4 items-end mb-20">
+  <section id="work" class="py-20 sm:py-32 lg:py-40 border-t border-veil/30">
+    <header class="grid grid-cols-12 gap-x-4 items-end mb-12 sm:mb-20">
       <div class="col-span-12 sm:col-span-8">
-        <p class="eyebrow mb-4">§ 01 — Work</p>
-        <h2 class="font-display text-ivory text-5xl sm:text-6xl tracking-tightest font-light leading-none">
+        <p class="eyebrow mb-3 sm:mb-4">§ 01 — Work</p>
+        <h2 class="font-display text-ivory tracking-tightest font-light leading-none text-[clamp(2rem,6vw,3.75rem)]">
           What I build<span class="text-gold">.</span>
         </h2>
       </div>
-      <div class="col-span-12 sm:col-span-4 sm:text-right mt-6 sm:mt-0">
+      <div class="col-span-12 sm:col-span-4 sm:text-right mt-5 sm:mt-0">
         <a
           href={`https://github.com/${HANDLES.github}`}
           target="_blank" rel="noopener"
@@ -102,7 +90,6 @@ function fmt(d) {
       </p>
     ) : (
       <>
-        {/* ── Headliner (first project) ── */}
         {(() => {
           const p = projects[0];
           const segments = langSegments(p.languages);
@@ -111,35 +98,35 @@ function fmt(d) {
               href={p.url}
               target="_blank"
               rel="noopener"
-              class="card group block p-8 sm:p-12 lg:p-16 mb-px"
+              class="card group block p-6 sm:p-12 lg:p-16 mb-px"
             >
-              <div class="grid grid-cols-12 gap-x-6 gap-y-8 items-start">
+              <div class="grid grid-cols-12 gap-x-6 gap-y-7 items-start">
                 <div class="col-span-12 lg:col-span-8">
-                  <div class="flex items-baseline gap-4 mb-6">
+                  <div class="flex items-baseline flex-wrap gap-3 sm:gap-4 mb-5 sm:mb-6">
                     <span class="font-mono text-[10px] uppercase tracking-regal text-gold/70">
                       ★ Headliner
                     </span>
                     {p.badge && (
-                      <span class="inline-block border border-gold/60 text-gold font-mono text-[10px] uppercase tracking-regal px-3 py-1">
+                      <span class="inline-block border border-gold/60 text-gold font-mono text-[10px] uppercase tracking-regal px-2.5 py-0.5 sm:px-3 sm:py-1">
                         {p.badge}
                       </span>
                     )}
                   </div>
-                  <h3 class="font-display font-light text-5xl sm:text-6xl lg:text-7xl text-ivory tracking-tighter leading-[1.02] group-hover:text-gold transition-colors duration-500">
+                  <h3 class="font-display font-light text-ivory tracking-tighter leading-[1.05] text-[clamp(2rem,7vw,4.5rem)] group-hover:text-gold transition-colors duration-500">
                     {p.name}
                   </h3>
                   {p.description ? (
-                    <p class="mt-6 text-bone text-[17px] sm:text-[18px] leading-relaxed max-w-2xl">
+                    <p class="mt-5 sm:mt-6 text-bone text-[15px] sm:text-[17px] leading-relaxed max-w-2xl">
                       {p.description}
                     </p>
                   ) : (
-                    <p class="mt-6 text-smoke italic text-[14px] max-w-2xl">
+                    <p class="mt-5 sm:mt-6 text-smoke italic text-[14px] max-w-2xl">
                       No description on this repo's README yet.
                     </p>
                   )}
                 </div>
 
-                <div class="col-span-12 lg:col-span-4 lg:pl-8 lg:border-l lg:border-veil/30 flex flex-col gap-7">
+                <div class="col-span-12 lg:col-span-4 lg:pl-8 lg:border-l lg:border-veil/30 flex flex-col gap-6 sm:gap-7">
                   {segments.length > 0 && (
                     <div>
                       <p class="font-mono text-[9px] uppercase tracking-regal text-smoke mb-3">
@@ -171,7 +158,7 @@ function fmt(d) {
                     )}
                     <div>Updated {fmt(p.updated)}</div>
                   </div>
-                  <div class="mt-auto flex items-center gap-2 font-mono text-[10px] uppercase tracking-regal text-bone group-hover:text-gold transition-colors duration-500">
+                  <div class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-regal text-bone group-hover:text-gold transition-colors duration-500">
                     <span>View on GitHub</span>
                     <Icon name="arrowUpRight" size={14} />
                   </div>
@@ -181,7 +168,6 @@ function fmt(d) {
           );
         })()}
 
-        {/* ── Supporting grid (remaining projects) ── */}
         {projects.length > 1 && (
           <ul class="grid sm:grid-cols-2 gap-px mt-px">
             {projects.slice(1).map((p, idx) => {
@@ -192,9 +178,9 @@ function fmt(d) {
                     href={p.url}
                     target="_blank"
                     rel="noopener"
-                    class="card group block h-full p-7 sm:p-9"
+                    class="card group block h-full p-6 sm:p-8 lg:p-9"
                   >
-                    <div class="flex items-baseline gap-3 mb-5">
+                    <div class="flex items-baseline flex-wrap gap-2.5 mb-4 sm:mb-5">
                       <span class="font-mono text-[10px] uppercase tracking-regal text-gold/70">
                         {String(idx + 2).padStart(2, '0')}
                       </span>
@@ -205,22 +191,22 @@ function fmt(d) {
                       )}
                     </div>
 
-                    <h3 class="font-display font-light text-3xl sm:text-4xl text-ivory tracking-tighter leading-tight group-hover:text-gold transition-colors duration-500">
+                    <h3 class="font-display font-light text-ivory tracking-tighter leading-tight text-[clamp(1.5rem,4.5vw,2.25rem)] group-hover:text-gold transition-colors duration-500">
                       {p.name}
                     </h3>
 
                     {p.description ? (
-                      <p class="mt-4 text-bone text-[14.5px] leading-relaxed">
+                      <p class="mt-3 sm:mt-4 text-bone text-[13.5px] sm:text-[14.5px] leading-relaxed">
                         {p.description}
                       </p>
                     ) : (
-                      <p class="mt-4 text-smoke italic text-[13px]">
+                      <p class="mt-3 sm:mt-4 text-smoke italic text-[13px]">
                         No description on this repo's README yet.
                       </p>
                     )}
 
                     {segments.length > 0 && (
-                      <div class="mt-6">
+                      <div class="mt-5 sm:mt-6">
                         <div class="flex h-px w-full overflow-hidden">
                           {segments.map((s) => (
                             <span
@@ -240,7 +226,7 @@ function fmt(d) {
                       </div>
                     )}
 
-                    <div class="mt-5 pt-4 border-t border-veil/30 flex items-center justify-between font-mono text-[9px] uppercase tracking-regal text-smoke">
+                    <div class="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-veil/30 flex items-center justify-between font-mono text-[9px] uppercase tracking-regal text-smoke">
                       <span>{fmt(p.updated)}</span>
                       <span class="inline-flex items-center gap-1.5 group-hover:text-gold transition-colors duration-500">
                         View <Icon name="arrowUpRight" size={11} />
@@ -258,15 +244,15 @@ function fmt(d) {
 
 
   <!-- ═══════════════════ § 02 — WRITING (carousel) ═══════════════════ -->
-  <section id="writing" class="py-32 sm:py-40 border-t border-veil/30">
-    <header class="grid grid-cols-12 gap-x-4 items-end mb-20">
+  <section id="writing" class="py-20 sm:py-32 lg:py-40 border-t border-veil/30">
+    <header class="grid grid-cols-12 gap-x-4 items-end mb-12 sm:mb-20">
       <div class="col-span-12 sm:col-span-8">
-        <p class="eyebrow mb-4">§ 02 — Writing</p>
-        <h2 class="font-display text-ivory text-5xl sm:text-6xl tracking-tightest font-light leading-none">
+        <p class="eyebrow mb-3 sm:mb-4">§ 02 — Writing</p>
+        <h2 class="font-display text-ivory tracking-tightest font-light leading-none text-[clamp(2rem,6vw,3.75rem)]">
           What I publish<span class="text-gold">.</span>
         </h2>
       </div>
-      <div class="col-span-12 sm:col-span-4 sm:text-right mt-6 sm:mt-0">
+      <div class="col-span-12 sm:col-span-4 sm:text-right mt-5 sm:mt-0">
         <div class="flex sm:justify-end gap-5 font-mono text-[10px] uppercase tracking-regal text-bone">
           <a href={SUBSTACK_BASE} target="_blank" rel="noopener" class="link">Substack</a>
           <a href={MEDIUM_BASE} target="_blank" rel="noopener" class="link">Medium</a>
@@ -288,16 +274,15 @@ function fmt(d) {
         aria-roledescription="carousel"
         aria-label="Essays"
       >
-        <!-- Slides -->
-        <ul class="carousel-track relative min-h-[28rem] sm:min-h-[32rem]">
+        <ul class="carousel-track relative min-h-[24rem] sm:min-h-[30rem]">
           {essays.map((essay, i) => (
             <li
-              class="carousel-slide absolute inset-0 px-2 sm:px-10 py-16 flex flex-col justify-center transition-opacity duration-700"
+              class="carousel-slide absolute inset-0 px-3 sm:px-10 py-10 sm:py-16 flex flex-col justify-center transition-opacity duration-700"
               data-index={i}
               aria-hidden={i === 0 ? 'false' : 'true'}
               style={`opacity:${i === 0 ? 1 : 0}; pointer-events:${i === 0 ? 'auto' : 'none'};`}
             >
-              <div class="flex items-baseline gap-4 mb-8">
+              <div class="flex items-baseline flex-wrap gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <span class="font-mono text-[10px] uppercase tracking-regal text-gold/70">
                   {String(i + 1).padStart(2, '0')} / {String(essays.length).padStart(2, '0')}
                 </span>
@@ -315,17 +300,17 @@ function fmt(d) {
                 rel="noopener"
                 class="group block max-w-4xl"
               >
-                <h3 class="font-display font-light text-ivory tracking-tighter leading-[1.05] text-[clamp(2rem,5vw,4rem)] group-hover:text-gold transition-colors duration-500">
+                <h3 class="font-display font-light text-ivory tracking-tighter leading-[1.05] text-[clamp(1.65rem,5.5vw,3.5rem)] group-hover:text-gold transition-colors duration-500">
                   {essay.title}
                 </h3>
 
                 {essay.subtitle && (
-                  <p class="mt-6 font-display italic text-bone text-xl sm:text-2xl leading-snug max-w-3xl">
+                  <p class="mt-5 sm:mt-6 font-display italic text-bone leading-snug max-w-3xl text-[clamp(1rem,2.5vw,1.4rem)]">
                     {essay.subtitle}
                   </p>
                 )}
 
-                <div class="mt-10 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-regal text-bone group-hover:text-gold transition-colors duration-500">
+                <div class="mt-8 sm:mt-10 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-regal text-bone group-hover:text-gold transition-colors duration-500">
                   Read in full <Icon name="arrowUpRight" size={14} />
                 </div>
               </a>
@@ -333,8 +318,7 @@ function fmt(d) {
           ))}
         </ul>
 
-        <!-- Controls -->
-        <div class="flex items-center justify-between px-4 sm:px-10 py-6 border-t border-veil/30">
+        <div class="flex items-center justify-between px-3 sm:px-10 py-5 sm:py-6 border-t border-veil/30">
           <button
             type="button"
             class="carousel-prev font-mono text-[10px] uppercase tracking-regal text-bone hover:text-gold transition-colors duration-500 disabled:text-smoke/50"
@@ -343,7 +327,6 @@ function fmt(d) {
             ← Prev
           </button>
 
-          <!-- Indicator dots -->
           <ul class="carousel-dots flex items-center gap-2">
             {essays.map((_, i) => (
               <li>
@@ -371,17 +354,17 @@ function fmt(d) {
 
 
   <!-- ═══════════════════ FOOTER ═══════════════════ -->
-  <footer id="contact" class="py-24 border-t border-veil/30">
+  <footer id="contact" class="py-16 sm:py-24 border-t border-veil/30">
     <div class="grid grid-cols-12 gap-6 items-end">
       <div class="col-span-12 sm:col-span-7">
-        <p class="eyebrow mb-4">Contact</p>
-        <p class="font-display text-ivory text-4xl sm:text-5xl tracking-tightest font-light leading-tight">
+        <p class="eyebrow mb-3 sm:mb-4">Contact</p>
+        <p class="font-display text-ivory tracking-tightest font-light leading-tight text-[clamp(1.75rem,5vw,3rem)]">
           Reach out<span class="text-gold">.</span>
         </p>
       </div>
 
-      <div class="col-span-12 sm:col-span-5 sm:justify-self-end">
-        <ul class="flex items-center gap-4">
+      <div class="col-span-12 sm:col-span-5 sm:justify-self-end mt-4 sm:mt-0">
+        <ul class="flex items-center gap-3 sm:gap-4">
           <li>
             <a
               href={`mailto:${HANDLES.email}`}
@@ -417,14 +400,13 @@ function fmt(d) {
       </div>
     </div>
 
-    <div class="mt-16 pt-8 border-t border-veil/30 flex items-center justify-between gap-4 flex-wrap font-mono text-[10px] uppercase tracking-regal text-smoke">
+    <div class="mt-10 sm:mt-16 pt-6 sm:pt-8 border-t border-veil/30 flex items-center justify-between gap-4 flex-wrap font-mono text-[9px] sm:text-[10px] uppercase tracking-regal text-smoke">
       <span>© {new Date().getFullYear()} {SITE.name}</span>
       <a href="#top" class="hover:text-gold transition-colors duration-500">↑ Top</a>
     </div>
   </footer>
 
 
-  <!-- ─── Carousel script (vanilla, no dependency) ─── -->
   <script is:inline>
     (function () {
       const carousel = document.querySelector('.carousel');
@@ -457,13 +439,11 @@ function fmt(d) {
         d.addEventListener('click', () => show(Number(d.dataset.target)))
       );
 
-      // Keyboard navigation when carousel is focused
       carousel.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') { e.preventDefault(); show(current - 1); }
         if (e.key === 'ArrowRight') { e.preventDefault(); show(current + 1); }
       });
 
-      // Touch/swipe (mobile)
       let startX = 0;
       carousel.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
       carousel.addEventListener('touchend', (e) => {
